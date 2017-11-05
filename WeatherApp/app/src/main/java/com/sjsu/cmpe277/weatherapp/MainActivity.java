@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,11 +28,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle mToggle;
     private ViewPager pager = null;
     private MainPageAdapter pagerAdapter = null;
     private static final String LOG_TAG = "MainActivity";
     private List<City> allCities;
     LayoutInflater inflater;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerAdapter recyclerViewAdapter;
     // Database Helper
     WeatherAppDbHelper db;
 
@@ -36,6 +45,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.toggle_open,R.string.toggle_close);
+
+        drawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewAdapter = new RecyclerAdapter(getApplicationContext());
+        recyclerView.setAdapter(recyclerViewAdapter);
 
         pagerAdapter = new MainPageAdapter();
         pager = (ViewPager) findViewById (R.id.view_pager);
@@ -58,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         Log.e(LOG_TAG,"On restart");
         getAllCities();
+        recyclerViewAdapter.setAllCities();
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
 
@@ -91,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap bmp = BitmapFactory.decodeByteArray(city.getCityImage(), 0, city.getCityImage().length);
         cityImage.setImageBitmap(bmp);
+
 
 
         Log.e(LOG_TAG,"BEFORE ADDING VIEW");
@@ -137,6 +165,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id= item.getItemId();
+
+        if(mToggle.onOptionsItemSelected(item)){
+
+            return true;
+        }
         if(id==R.id.action_add_city){
             startActivity(new Intent(this,AddCityActivity.class));
         }

@@ -72,6 +72,8 @@ import static java.security.AccessController.getContext;
 
     @Override
     public City getItem(int position) {
+         Log.e(TAG," cities Sizes are =>+"+citiesList.size());
+        Log.e(TAG," Incoming position are =>+"+position);
         return citiesList.get(position);
     }
 
