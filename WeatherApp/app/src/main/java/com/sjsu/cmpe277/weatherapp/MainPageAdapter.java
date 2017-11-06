@@ -6,13 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Mak on 10/29/17.
  */
 
-public class MainPageAdapter extends PagerAdapter {
+public class MainPageAdapter extends PagerAdapter implements Serializable {
 
     private ArrayList<View> views = new ArrayList<View>();
     private static final String LOG_TAG = "MainPageAdapter";

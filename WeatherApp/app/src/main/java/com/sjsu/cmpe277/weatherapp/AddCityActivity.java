@@ -143,6 +143,11 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
 
             long city_id = db.createCity(city);
             Log.e(LOG_TAG,"Inserted city return row id is "+city_id);
+
+          // ViewPagerHandler mViewPagerHandler= (ViewPagerHandler) getIntent().getSerializableExtra("ViewPagerHandler");
+
+           //mViewPagerHandler.addView(mViewPagerHandler.createCityView(city));
+
             finish();
         }
     };

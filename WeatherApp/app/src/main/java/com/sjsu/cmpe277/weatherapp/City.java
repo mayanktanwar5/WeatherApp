@@ -2,11 +2,13 @@ package com.sjsu.cmpe277.weatherapp;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by Mak on 10/28/17.
  */
 
-public class City {
+public class City implements Serializable{
     private static final String LOG_TAG = "CityClass";
     private String cityName;
     private String cityCountry;
