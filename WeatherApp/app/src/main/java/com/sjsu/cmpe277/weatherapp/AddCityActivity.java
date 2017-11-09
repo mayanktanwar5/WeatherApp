@@ -45,6 +45,7 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
     private CityAdapter mCityAdapter;
     private City city;
 
+
     // Database Helper
     WeatherAppDbHelper db;
 

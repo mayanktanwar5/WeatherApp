@@ -62,23 +62,6 @@ public class ViewPagerHandler implements Serializable {
 
     public void addCityView(City city, int position) {
 
-//        FrameLayout v0 = (FrameLayout) inflater.inflate(R.layout.city_view, null);
-//
-//        TextView cityName = (TextView) v0.findViewById(R.id.cityName);
-//        cityName.setText(city.getCityName());
-//        TextView cityCountry = (TextView) v0.findViewById(R.id.cityAddress);
-//        cityCountry.setText(city.getCityCountry());
-//        TextView cityLang = (TextView) v0.findViewById(R.id.cityLang);
-//        cityLang.setText(Double.toString(city.getCityLatitude()));
-//        TextView cityLong = (TextView) v0.findViewById(R.id.cityLong);
-//        cityLong.setText(Double.toString(city.getCityLongitude()));
-//        ImageView cityImage = (ImageView) v0.findViewById(R.id.cityBgImage);
-//
-//        Bitmap bmp = BitmapFactory.decodeByteArray(city.getCityImage(), 0, city.getCityImage().length);
-//        cityImage.setImageBitmap(bmp);
-
-        //createCityView(city);
-
         Log.e(LOG_TAG, "BEFORE ADDING VIEW");
         pagerAdapter.addView(createCityView(city), position);
 

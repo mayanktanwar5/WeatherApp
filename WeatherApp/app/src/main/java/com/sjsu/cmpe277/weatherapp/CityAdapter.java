@@ -55,7 +55,6 @@ import static java.security.AccessController.getContext;
         Log.i(TAG, "City Adapter construdtor context is ."+context);
     }
 
-
     public void setGoogleApiClient(GoogleApiClient googleApiClient) {
         Log.i(TAG, "Google API client sent: " + googleApiClient);
         if (googleApiClient == null || !googleApiClient.isConnected()) {
