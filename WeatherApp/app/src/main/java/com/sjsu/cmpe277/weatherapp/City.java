@@ -3,6 +3,7 @@ package com.sjsu.cmpe277.weatherapp;
 import android.graphics.Bitmap;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Mak on 10/28/17.
@@ -16,6 +17,9 @@ public class City implements Serializable{
     private int owId;
     private double cityLongitude;
     private double cityLatitude;
+    private double cityTemp;
+    private Date timestamp;
+
     private double cityMinTemp;
     private double cityMaxTemp;
     private String cityTempMetric;
@@ -23,6 +27,12 @@ public class City implements Serializable{
     private double cityPressure;
     private double cityWindSpeed;
     private double cityDegrees;
+    private double weatherId;
+    private String weatherMain;
+    private String weatherDescription;
+    private String weatherIcon;
+
+
     private byte[] cityImage;
 
     public City(String googleCityId) {
@@ -81,6 +91,14 @@ public class City implements Serializable{
         this.cityDegrees = cityDegrees;
     }
 
+    public double getCityTemp() {
+        return cityTemp;
+    }
+
+    public void setCityTemp(double cityTemp) {
+        this.cityTemp = cityTemp;
+    }
+
     public City(String cityName, String cityCountry, String googleCityId, double cityLongitude, double cityLatitude, byte[] cityImage) {
         this.cityName = cityName;
         this.cityCountry = cityCountry;
@@ -89,6 +107,12 @@ public class City implements Serializable{
         this.cityLatitude = cityLatitude;
         this.cityImage = cityImage;
 
+    }
+
+    public City(String cityName, int owId) {
+        this.cityName = cityName;
+        this.cityCountry = cityCountry;
+        this.owId = owId;
     }
 
     public String getCityName() {
@@ -145,5 +169,50 @@ public class City implements Serializable{
 
     public byte[] getCityImage() {
         return cityImage;
+    }
+
+
+    public void setGoogleCityId(String googleCityId) {
+        this.googleCityId = googleCityId;
+    }
+
+    public double getWeatherId() {
+        return weatherId;
+    }
+
+    public void setWeatherId(double weatherId) {
+        this.weatherId = weatherId;
+    }
+
+    public String getWeatherMain() {
+        return weatherMain;
+    }
+
+    public void setWeatherMain(String weatherMain) {
+        this.weatherMain = weatherMain;
+    }
+
+    public String getWeatherDescription() {
+        return weatherDescription;
+    }
+
+    public void setWeatherDescription(String weatherDescription) {
+        this.weatherDescription = weatherDescription;
+    }
+
+    public String getWeatherIcon() {
+        return weatherIcon;
+    }
+
+    public void setWeatherIcon(String weatherIcon) {
+        this.weatherIcon = weatherIcon;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }

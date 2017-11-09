@@ -57,6 +57,8 @@ import com.google.android.gms.location.places.Places;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherService;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherServiceImpl;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -110,6 +112,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         recyclerView.setLayoutManager(layoutManager);
         recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        db = new WeatherAppDbHelper(getApplicationContext());
+
+        if(db.getAllCities().size()<=0){
+
+            getCityByLocation();
+        }
+
 
 
     }
@@ -254,12 +264,40 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             int maxLines = address.get(0).getMaxAddressLineIndex();
             if (address.size() > 0) {
                 Log.e(LOG_TAG, "Country name" + address.get(0).getCountryName());
-                String currentCity = address.get(0).getCountryName();
+                String currentCity = address.get(0).getLocality();
+                String currentCountrty=address.get(0).getCountryName();
                 String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("currentCity", currentCity);
                 editor.putBoolean("isCityChanged", !currentCity.equals(lastCity));
                 editor.commit();
+
+
+                // check if city exist in DB
+
+               // db = new WeatherAppDbHelper(getApplicationContext());
+
+                if(!db.getCityByName(currentCity)){
+
+                    mWeatherService = new WeatherServiceImpl();
+                    try {
+
+                        City city=   mWeatherService.getCurrentWeather(currentCity,currentCountrty);
+
+                        long returnRowID = db.createCity(city);
+
+                        Log.e(LOG_TAG,"added the city in DB"+returnRowID);
+
+                        viewPagerHandler.addCityView(city,viewPagerHandler.getViewCount());
+                        viewPagerHandler.notifyDataChanged();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
             }
 
         } catch (IOException e) {

@@ -23,7 +23,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = "WeatherAppDbHelper";
     public static final String DATABASE_NAME = "weatherApp.db";
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // Table Names
     private static final String TABLE_WEATHER = "weather";
@@ -35,6 +35,11 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String CITY_COUNTRY = "city_country";
     private static final String CITY_LONGITUDE = "longitude";
     private static final String CITY_LATITUDE = "latitude";
+    private static final String CITY_TEMP = "city_temp";
+    private static final String WEATHER_ID = "weather_id";
+    private static final String WEATHER_MAIN = "weather_main";
+    private static final String WEATHER_DESCRIPTION = "weather_description";
+    private static final String WEATHER_ICON = "weather_icon";
     private static final String MIN_TEMP = "min_temp";
     private static final String MAX_TEMP = "max_temp";
     private static final String TEMP_METRIC = "metric";
@@ -53,12 +58,17 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_WEATHER = "CREATE TABLE "
             + TABLE_WEATHER
             + "("
-            + GOOGLE_CITY_ID + " TEXT PRIMARY KEY,"
+            + GOOGLE_CITY_ID + " TEXT ,"
             + OW_CITY_ID + " TEXT,"
-            + CITY_NAME + " TEXT,"
+            + CITY_NAME + " TEXT PRIMARY KEY,"
             + CITY_COUNTRY + " TEXT,"
             + CITY_LONGITUDE + " DOUBLE,"
             + CITY_LATITUDE + " DOUBLE,"
+            + CITY_TEMP + " DOUBLE,"
+            + WEATHER_DESCRIPTION + " TEXT,"
+            + WEATHER_ICON + " TEXT,"
+            + WEATHER_MAIN + " TEXT,"
+            + WEATHER_ID + " INTEGER,"
             + MIN_TEMP + " DOUBLE,"
             + MAX_TEMP + " DOUBLE,"
             + TEMP_METRIC + "TEXT,"
@@ -102,7 +112,15 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         values.put(CITY_LATITUDE,city.getCityLatitude());
         values.put(CITY_LONGITUDE,city.getCityLongitude());
         values.put(CITY_IMAGE,city.getCityImage());
+        values.put(CITY_TEMP,city.getCityTemp());
+        values.put(WEATHER_DESCRIPTION,city.getWeatherDescription());
+        values.put(WEATHER_ID,city.getWeatherId());
+        values.put(WEATHER_ICON,city.getWeatherIcon());
+        values.put(WEATHER_MAIN,city.getWeatherMain());
+        values.put(HUMIDITY,city.getCityHumididty());
+        values.put(PRESSURE,city.getCityPressure());
         values.put(ROW_CREATED_AT,dateFormat.format(new Date()));
+
 
         // insert row
         long city_row_id = db.insert(TABLE_WEATHER, null, values);
@@ -141,6 +159,32 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         return city;
 
     }
+
+
+    /*
+* check  city ByName
+*/
+    public boolean getCityByName(String cityName){
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_WEATHER + " WHERE "
+                + CITY_NAME + " = ? ;" ;
+
+        Log.e(LOG_TAG,"  RESULT OF THE Query "+ selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,   new String[]{cityName});
+
+        Log.e("value ", "value of cursor is "+c+"count ==>"+c.getCount());
+        if (c.getCount() <=0)
+            return false;
+
+
+        return true;
+
+    }
+
 
         /*
  * get all cities

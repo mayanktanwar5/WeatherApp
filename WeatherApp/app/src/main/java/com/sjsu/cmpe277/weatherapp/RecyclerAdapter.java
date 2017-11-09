@@ -61,9 +61,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
 
         holder.cityAdress.setText(cities.get(position).getCityCountry());
         holder.cityName.setText(cities.get(position).getCityName());
-        Bitmap bmp = BitmapFactory.decodeByteArray(cities.get(position).getCityImage(), 0, cities.get(position).getCityImage().length);
 
-        holder.cityImage.setImageBitmap(bmp);
+        if(cities.get(position).getCityImage()!=null) {
+            Bitmap bmp = BitmapFactory.decodeByteArray(cities.get(position).getCityImage(), 0, cities.get(position).getCityImage().length);
+
+            holder.cityImage.setImageBitmap(bmp);
+        }
     }
 
     @Override

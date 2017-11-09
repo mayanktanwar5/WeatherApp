@@ -60,6 +60,7 @@ public class ViewPagerHandler implements Serializable {
         pagerAdapter.notifyDataSetChanged();
     }
 
+
     public void addCityView(City city, int position) {
 
         Log.e(LOG_TAG, "BEFORE ADDING VIEW");
@@ -83,12 +84,19 @@ public class ViewPagerHandler implements Serializable {
         cityLong.setText(Double.toString(city.getCityLongitude()));
         ImageView cityImage = (ImageView) v0.findViewById(R.id.cityBgImage);
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(city.getCityImage(), 0, city.getCityImage().length);
-        cityImage.setImageBitmap(bmp);
+        if(city.getCityImage()!=null){
+            Bitmap bmp = BitmapFactory.decodeByteArray(city.getCityImage(), 0, city.getCityImage().length);
+            cityImage.setImageBitmap(bmp);
+        }
+
         return v0;
 
     }
 
+    public void notifyDataChanged(){
+
+        pagerAdapter.notifyDataSetChanged();
+    }
 
     public void addView(View newPage) {
         Log.e(LOG_TAG, "ADDING VIEW");
@@ -103,6 +111,11 @@ public class ViewPagerHandler implements Serializable {
         if (pageIndex == pagerAdapter.getCount())
             pageIndex--;
         pager.setCurrentItem(pageIndex);
+    }
+
+    public int getViewCount(){
+
+        return pagerAdapter.getCount();
     }
 
     public View getCurrentPage() {
