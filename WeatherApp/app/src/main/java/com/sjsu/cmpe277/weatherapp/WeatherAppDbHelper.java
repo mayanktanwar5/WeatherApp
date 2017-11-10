@@ -23,10 +23,12 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = "WeatherAppDbHelper";
     public static final String DATABASE_NAME = "weatherApp.db";
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 12;
 
     // Table Names
     private static final String TABLE_WEATHER = "weather";
+    private static final String TABLE_TODAY_WEATHER = "weather_today";
+    private static final String TABLE_FORECAST_WEATHER = "weather_forecast";
 
     // Column names
     private static final String OW_CITY_ID = "ow_id";
@@ -47,6 +49,9 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String PRESSURE = "pressure";
     private static final String WIND_SPEED = "wind_speed";
     private static final String DEGREES = "degrees";
+    private static final String TEMP_HOUR = "temp_hour";
+    private static final String TEMP_DAY = "temp_day";
+    private static final String TEMP_MONTH_DAY = "temp_month_day";
     private static final String CITY_IMAGE = "city_image";
     private static final String ROW_CREATED_AT = "create_date";
     private static final String UPDATE_DATE = "update_date";
@@ -82,6 +87,52 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             + ")";
 
 
+    // Table Create Statements
+    // Weather Table table create statement
+    private static final String CREATE_TABLE_TODAY_WEATHER = "CREATE TABLE "
+            + TABLE_TODAY_WEATHER
+            + "("
+            + OW_CITY_ID + " TEXT,"
+            + CITY_NAME + " TEXT ,"
+            + CITY_COUNTRY + " TEXT,"
+            + CITY_TEMP + " DOUBLE,"
+            + WEATHER_ID + " INTEGER,"
+            + MIN_TEMP + " DOUBLE,"
+            + MAX_TEMP + " DOUBLE,"
+            + HUMIDITY + " DOUBLE,"
+            + PRESSURE + " DOUBLE,"
+            + WIND_SPEED + " DOUBLE,"
+            + TEMP_HOUR + " INTEGER,"
+            + ROW_CREATED_AT + " DATETIME,"
+            + UPDATE_DATE + "DATETIME"
+            + ")";
+
+
+
+    // Table Create Statements
+    // Weather Table table create statement
+    private static final String CREATE_TABLE_FORECAST_WEATHER = "CREATE TABLE "
+            + TABLE_FORECAST_WEATHER
+            + "("
+            + OW_CITY_ID + " TEXT,"
+            + CITY_NAME + " TEXT ,"
+            + CITY_COUNTRY + " TEXT,"
+            + CITY_TEMP + " DOUBLE,"
+            + WEATHER_ID + " INTEGER,"
+            + MIN_TEMP + " DOUBLE,"
+            + MAX_TEMP + " DOUBLE,"
+            + HUMIDITY + " DOUBLE,"
+            + PRESSURE + " DOUBLE,"
+            + WIND_SPEED + " DOUBLE,"
+            + TEMP_HOUR + " TEXT,"
+            + TEMP_DAY + " TEXT,"
+            + TEMP_MONTH_DAY + " TEXT,"
+            + ROW_CREATED_AT + " DATETIME,"
+            + UPDATE_DATE + "DATETIME"
+            + ")";
+
+
+
     public WeatherAppDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -91,6 +142,8 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
 
         Log.i(LOG_TAG, "CREATING DB");
         db.execSQL(CREATE_TABLE_WEATHER);
+        db.execSQL(CREATE_TABLE_TODAY_WEATHER);
+        db.execSQL(CREATE_TABLE_FORECAST_WEATHER);
     }
 
     @Override
@@ -98,6 +151,8 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         Log.i(LOG_TAG, "Upgrading DB");
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_WEATHER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TODAY_WEATHER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FORECAST_WEATHER);
         // create new tables
         onCreate(db);
     }
@@ -158,6 +213,75 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         return city_row_id;
     }
 
+
+
+
+
+    public long createTodayWeather(List<City>
+                                           cities) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        long city_row_id=0;
+
+        try {
+            ContentValues values = new ContentValues();
+            for (City city : cities) {
+
+                values.put(CITY_TEMP, city.getCityTemp());
+
+                Log.e(LOG_TAG,"Inserting TODAY weather ID"+city.getWeatherId());
+                values.put(WEATHER_ID, city.getWeatherId());
+
+                Log.e(LOG_TAG,"Inserting TODAY humidiirt"+city.getCityHumididty());
+                values.put(HUMIDITY, city.getCityHumididty());
+                Log.e(LOG_TAG,"Inserting TODAY Pressure"+city.getCityPressure());
+                values.put(PRESSURE, city.getCityPressure());
+                values.put(TEMP_HOUR,city.getTempHour());
+                values.put(MIN_TEMP, city.getCityMinTemp());
+                values.put(MAX_TEMP, city.getCityMaxTemp());
+                city_row_id= db.insert(TABLE_TODAY_WEATHER, null, values);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        return city_row_id;
+    }
+
+
+    public long createForecastWeather(List<City> cities) {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        long city_row_id=0;
+
+        try {
+            ContentValues values = new ContentValues();
+            for (City city : cities) {
+
+                values.put(CITY_TEMP, city.getCityTemp());
+                values.put(WEATHER_ID, city.getWeatherId());
+                Log.e(LOG_TAG,"Inserting TODAY humidiirt"+city.getCityHumididty());
+                values.put(HUMIDITY, city.getCityHumididty());
+                Log.e(LOG_TAG,"Inserting TODAY Pressure"+city.getCityPressure());
+                values.put(PRESSURE, city.getCityPressure());
+                values.put(TEMP_HOUR,city.getTempHour());
+                values.put(TEMP_DAY,city.getTempDay());
+                values.put(TEMP_MONTH_DAY,city.getTempDay());
+                values.put(MIN_TEMP, city.getCityMinTemp());
+                values.put(MAX_TEMP, city.getCityMaxTemp());
+                city_row_id= db.insert(TABLE_FORECAST_WEATHER, null, values);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        return city_row_id;
+    }
 
     /*
  * get single city
@@ -259,6 +383,99 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
 
         return allCities;
     }
+
+
+
+
+    public List<City> getTodayWeather(String cityName) {
+
+        List<City> allCities = new ArrayList<City>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_TODAY_WEATHER + " WHERE "
+                + CITY_NAME + " = ? ;";
+
+
+        Log.e(LOG_TAG, " ALL THE CITIES " + selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{cityName});
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                City city = new City(c.getString(c.getColumnIndex(CITY_NAME))
+                        , c.getString(c.getColumnIndex(CITY_COUNTRY))
+                        , c.getString(c.getColumnIndex(GOOGLE_CITY_ID))
+                        , c.getDouble(c.getColumnIndex(CITY_LONGITUDE))
+                        , c.getDouble(c.getColumnIndex(CITY_LATITUDE))
+                        , c.getBlob(c.getColumnIndex(CITY_IMAGE))
+                );
+
+                city.setWeatherIcon(c.getString(c.getColumnIndex(WEATHER_ICON)));
+                city.setWeatherMain(c.getString(c.getColumnIndex(WEATHER_MAIN)));
+                city.setWeatherId(c.getDouble(c.getColumnIndex(WEATHER_ID)));
+                city.setWeatherDescription(c.getString(c.getColumnIndex(WEATHER_DESCRIPTION)));
+                city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
+                city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
+                city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
+
+                city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
+
+                // adding to todo list
+                allCities.add(city);
+            } while (c.moveToNext());
+        }
+
+        return allCities;
+    }
+
+
+
+    public List<City> getForecastWeather(String cityName) {
+
+        List<City> allCities = new ArrayList<City>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_TODAY_WEATHER + " WHERE "
+                + CITY_NAME + " = ? ;";
+
+
+
+        Log.e(LOG_TAG, " ALL THE CITIES " + selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, new String[]{cityName});
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                City city = new City(c.getString(c.getColumnIndex(CITY_NAME))
+                        , c.getString(c.getColumnIndex(CITY_COUNTRY))
+                        , c.getString(c.getColumnIndex(GOOGLE_CITY_ID))
+                        , c.getDouble(c.getColumnIndex(CITY_LONGITUDE))
+                        , c.getDouble(c.getColumnIndex(CITY_LATITUDE))
+                        , c.getBlob(c.getColumnIndex(CITY_IMAGE))
+                );
+
+                city.setWeatherIcon(c.getString(c.getColumnIndex(WEATHER_ICON)));
+                city.setWeatherMain(c.getString(c.getColumnIndex(WEATHER_MAIN)));
+                city.setWeatherId(c.getDouble(c.getColumnIndex(WEATHER_ID)));
+                city.setWeatherDescription(c.getString(c.getColumnIndex(WEATHER_DESCRIPTION)));
+                city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
+                city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
+                city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
+
+                city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
+                city.setTempDay(c.getString(c.getColumnIndex(TEMP_DAY)));
+                city.setTempMonthDay(c.getString(c.getColumnIndex(TEMP_MONTH_DAY)));
+
+                // adding to todo list
+                allCities.add(city);
+            } while (c.moveToNext());
+        }
+
+        return allCities;
+    }
+
 
 
         /*

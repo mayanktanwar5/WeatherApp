@@ -20,10 +20,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -33,7 +36,7 @@ import static android.provider.Settings.System.DATE_FORMAT;
  * Created by vivek on 11/4/2017.
  */
 
-public class WeatherServiceImpl    implements WeatherService  {
+public class WeatherServiceImpl implements WeatherService {
 
     SimpleDateFormat mSimpleDatFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -42,12 +45,12 @@ public class WeatherServiceImpl    implements WeatherService  {
             : OpenWeatherMap.Units.IMPERIAL;
 
 
-
     OpenWeatherMap owm = new OpenWeatherMap(units, "647f4536db207983f6f2345572c9492f");
+
     @Override
     public City getCurrentWeather(String city, String country) throws JSONException {
-        DailyWeather dailyWeather=null;
-        JSONObject weatherInfo=weatherInfo("http://api.openweathermap.org/data/2.5/weather?q="+getSuitableLocation(city)+","+getSuitableLocation(country)+"&units=metric"+"&appid=647f4536db207983f6f2345572c9492f",true);
+        DailyWeather dailyWeather = null;
+        JSONObject weatherInfo = weatherInfo("http://api.openweathermap.org/data/2.5/weather?q=" + getSuitableLocation(city) + "," + getSuitableLocation(country) + "&units=metric" + "&appid=647f4536db207983f6f2345572c9492f", true);
 
         City cityObj = currentWeatherJsonParser(weatherInfo);
         cityObj.setCityCountry(country);
@@ -56,92 +59,126 @@ public class WeatherServiceImpl    implements WeatherService  {
         return cityObj;
 
 
-//        try{
-//
-//            cityDailyWeather = new City()
-//        dailyWeather=new DailyWeather(Float.parseFloat(weatherInfo[0].getString("temp")),
-//                Float.parseFloat(weatherInfo[0].getString("temp_min")),
-//                Float.parseFloat(weatherInfo[0].getString("temp_max")),
-//                new Date(),
-//                city,
-//                weatherInfo[1].getString("main"));
-//        }
-//        catch (JSONException e){
-//            e.printStackTrace();
-//        }
-
     }
 
-//    public String getCity(double latitude,double longitude){
-//        System.out.println("http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid=647f4536db207983f6f2345572c9492f");
-//        JSONObject[] weatherInfo=weatherInfo("http://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid=647f4536db207983f6f2345572c9492f",false);
-//        try{
-//            System.out.println("weather :"+weatherInfo[0].toString());
-//            return weatherInfo[0].getString("name");
-//        }
-//        catch (JSONException e){
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
     private String getSuitableLocation(String location) {
-        String []locationList=location.split("\\s+");
-        StringBuilder build=new StringBuilder();
-        for(int i=0;i<locationList.length-1;i++){
+        String[] locationList = location.split("\\s+");
+        StringBuilder build = new StringBuilder();
+        for (int i = 0; i < locationList.length - 1; i++) {
             build.append(locationList[i]);
             build.append("%20");
         }
-        if(locationList.length>0){
-            build.append(locationList[locationList.length-1]);
+        if (locationList.length > 0) {
+            build.append(locationList[locationList.length - 1]);
         }
         return build.toString();
     }
 
-  //  @Override
-//    public City[] getOneDayForecast(String city, String country, String timeZone) {
-//        JSONArray forecast=weatherForecastInfo("http://api.openweathermap.org/data/2.5/forecast?q="+getSuitableLocation(city)+","+getSuitableLocation(country)+"&appid=647f4536db207983f6f2345572c9492f");
-//        City [] weathers=new City[9];
-//
-//        try {
-//
-//            Date currentDate=new Date();
-//            for (int i = 0; i < 9; i++) {
-//                JSONObject jsonObject = new JSONObject(forecast.getJSONObject(i).get("main").toString());
-//                JSONObject weather = new JSONObject(forecast.getJSONObject(i).getJSONArray("weather").getJSONObject(0).toString());
-//
-//                String UTCdate=forecast.getJSONObject(i).get("dt_txt").toString()+" UTC";
-//                String formatPattern = "yyyy-MM-dd hh:mm:ss zzz";
-//
-//                SimpleDateFormat sdf = new SimpleDateFormat(formatPattern);
-//                Date date=sdf.parse(UTCdate);
-//
-//                DateFormat formatter = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
-//                formatter.setTimeZone(TimeZone.getTimeZone(timeZone));
-//
-//                System.out.println(timeZone+" :"+formatter.format(date));
-//                SimpleDateFormat sdfAns=new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
-//                Date dateobj=sdfAns.parse(formatter.format(date));
-//
-//                DailyWeaCityther dailyWeather = new DailyWeather(Float.parseFloat(jsonObject.get("temp").toString()),
-//
-//                        Float.parseFloat(jsonObject.get("temp_min").toString()),
-//                        Float.parseFloat(jsonObject.get("temp_max").toString()),
-//                        dateobj,
-//                        city,
-//                        weather.get("main").toString());
-//                weathers[i]=dailyWeather;
-//                currentDate.setTime(currentDate.getTime()+3600 * 3000);
-//            }
-//        }
-//        catch (Exception ex){
-//            ex.printStackTrace();
-//        }
-////        catch (IOException ex){
-////            ex.printStackTrace();
-////        }
-//        return weathers;
-//    }
+    @Override
+    public List<City> getForecast(String city, String country, String timeZone, String forecastType) {
+        JSONObject forecast = null;
+        List<City> weathers = new ArrayList<>();
+        int j = 0;
+        Log.e("WeatherSercice","getting the forecast data");
+
+        try {
+
+            forecast = weatherInfo("http://api.openweathermap.org/data/2.5/forecast?q=" + getSuitableLocation(city) + "," + getSuitableLocation(country) + "&units=metric" +"&appid=647f4536db207983f6f2345572c9492f", true);
+
+            String cityName = forecast.getJSONObject("city").getString("name");
+            int cityId = forecast.getJSONObject("city").getInt("id");
+
+            JSONArray forecastArray = forecast.getJSONArray("list");
+
+              City cityRes;
+                if (forecastType.equals("one")) {
+
+                    Log.e("WeatherSercice","getting the forecast equals ===> ONE");
+
+                    for (int i = 0; i < 9; i++) {
+                        JSONObject jsonObject = forecastArray.getJSONObject(i);
+
+
+                        cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
+
+                        String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
+                        cityRes.setTempHour(res[1] + " " + res[3].toLowerCase());
+                        weathers.add(cityRes) ;
+                    }
+
+                } else if (forecastType.equals("five")) {
+
+
+                    Log.e("WeatherSercice","getting the forecast equals ===> five");
+                    for (int i = 0; i < forecastArray.length(); i++) {
+                        JSONObject jsonObject = forecastArray.getJSONObject(i);
+                        String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
+
+                        if (Integer.parseInt(res[1]) > 11 && Integer.parseInt(res[1]) < 16) {
+
+
+                            Log.e("WeatherSercice","met the condition running for ===> "+j);
+                            cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
+
+                            cityRes.setTempDay(res[0]);
+
+                            cityRes.setTempMonthDay(res[2]);
+                            weathers.add(cityRes);
+                            j++;
+                        }
+
+                    }
+                }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return weathers;
+    }
+
+
+    private String[] TimezoneConverter(String timeStamp, String timeZone) {
+
+        Date d = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        String[] results = new String[4];
+
+        String dayPattern = "EEE";
+        String hourPattern = "hh";
+        String monthDayPattern = "MM/dd";
+        String am_pmPattern = "aa";
+
+        SimpleDateFormat sdfDayPattern = new SimpleDateFormat(dayPattern);
+        sdfDayPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String day = sdfDayPattern.format(d);
+
+
+        results[0] = day;
+
+        SimpleDateFormat shourPattern = new SimpleDateFormat(hourPattern);
+        shourPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String hour = shourPattern.format(d);
+
+        results[1] = hour;
+
+
+        SimpleDateFormat smonthDayPattern = new SimpleDateFormat(monthDayPattern);
+        smonthDayPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String monthDay = shourPattern.format(d);
+
+        results[2] = monthDay;
+
+
+        SimpleDateFormat sam_pmPattern = new SimpleDateFormat(am_pmPattern);
+        sam_pmPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String amPm = shourPattern.format(d);
+
+        results[3] = amPm;
+
+        return results;
+
+    }
+
 
     //@Override
 //    public DailyWeather[] getFiveDayForecast(String city, String country,String timeZone) {
@@ -193,20 +230,20 @@ public class WeatherServiceImpl    implements WeatherService  {
 //    }
 
 
-    private JSONObject weatherInfo(String url,boolean mainData) throws JSONException {
+    private JSONObject weatherInfo(String url, boolean mainData) throws JSONException {
 
-        JSONObject jsonObject =null;
+        JSONObject jsonObject = null;
         try {
-            jsonObject= new NetworkUtil(mainData).execute(url).get();
+            jsonObject = new NetworkUtil(mainData).execute(url).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        String x= jsonObject.getString("main");
-        Log.e("WEATHERSRVICE","received the json data"+x);
-        return  jsonObject;
+
+        Log.e("WEATHERSRVICE", "received the json data" + jsonObject);
+        return jsonObject;
     }
 
     private City currentWeatherJsonParser(JSONObject jsonObject) throws JSONException {
@@ -216,7 +253,7 @@ public class WeatherServiceImpl    implements WeatherService  {
 
         String cityName = jsonObject.getString("name");
         int cityId = jsonObject.getInt("id");
-        City  city = new City(cityName,cityId);
+        City city = new City(cityName, cityId);
 
         city.setCityTemp(Double.parseDouble(mainObj.getString("temp")));
         city.setCityHumididty(Double.parseDouble(mainObj.getString("humidity")));
@@ -232,37 +269,29 @@ public class WeatherServiceImpl    implements WeatherService  {
         return city;
     }
 
-    private JSONArray weatherForecastInfo(String url){
-        try {
-            URL openWeatherURL=new URL(url);
-            HttpURLConnection conn = (HttpURLConnection) openWeatherURL.openConnection();
-            if(conn.getResponseCode()==200){
+    private City forecastWeatherJsonParser(JSONObject jsonObject, String cityName, int cityId) throws JSONException {
 
-                InputStream responseBody = conn.getInputStream();
-                InputStreamReader responseBodyReader=new InputStreamReader(responseBody);
-                BufferedReader br=new BufferedReader(responseBodyReader);
-                StringBuilder buff=new StringBuilder();
-                String line="";
+        JSONObject mainObj = new JSONObject(jsonObject.getString("main"));
+        JSONObject weatherObj = jsonObject.getJSONArray("weather").getJSONObject(0);
 
-                while((line=br.readLine())!=null)
-                    buff.append(line);
 
-                try {
-                    JSONObject jsonObject = new JSONObject(buff.toString());
-                    return jsonObject.getJSONArray("list");
-                }
-                catch (JSONException jsonException){
-                    jsonException.printStackTrace();
-                }
-                conn.disconnect();
+        Log.e("L","Inside forecastWeatherJsonParser service forecast");
+        City city = new City(cityName, cityId);
 
-            }else{
-                System.out.println("Error processing request :"+conn.getResponseCode());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        city.setCityTemp(Double.parseDouble(mainObj.getString("temp")));
+        city.setCityHumididty(Double.parseDouble(mainObj.getString("humidity")));
+        city.setCityMinTemp(Double.parseDouble(mainObj.getString("temp_min")));
+        city.setCityMaxTemp(Double.parseDouble(mainObj.getString("temp_max")));
+        city.setCityPressure(Double.parseDouble(mainObj.getString("pressure")));
+        city.setWeatherDescription(weatherObj.getString("description"));
+        city.setWeatherId(Double.parseDouble(weatherObj.getString("id")));
+        city.setWeatherMain(weatherObj.getString("main"));
+        city.setWeatherIcon(weatherObj.getString("icon"));
+
+
+        return city;
     }
+
+
 
 }

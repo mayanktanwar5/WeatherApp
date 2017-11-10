@@ -270,11 +270,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Log.e(LOG_TAG,"CALLING current city");
             String s = new CurrentCity(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng)).get();
 
+            Long tsLong = System.currentTimeMillis()/1000;
+            String timeStamp = tsLong.toString();
+            String timezone = new CityTimezone(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng),timeStamp).get();
             String cityNameRes = "";
             String cityCountryRes = "";
 
             Log.e(LOG_TAG,"CALLING current city ka result is "+s);
             try {
+
+                // City name JSON Parser
+
                 JSONObject jsonObject = new JSONObject(s);
 
                 JSONArray results = (JSONArray) jsonObject.get("results");
@@ -297,16 +303,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     }
                 }
 
+                // Timezone JSON Parser
+
+                JSONObject timezoneJsonObject = new JSONObject(timezone);
+                String timzoneId = timezoneJsonObject.getString("timeZoneId");
+
+
                 Log.e(LOG_TAG,"CALLING current city name is  "+cityNameRes+"currentCIty country "+cityCountryRes);
-                if (!cityNameRes.equals("") && !cityCountryRes.equals("")) {
+                if (!cityNameRes.equals("") && !cityCountryRes.equals("") && !timzoneId.equals("")) {
 
                     Log.e(LOG_TAG,"ENtered all matched   "+cityNameRes+"currentCIty country "+cityCountryRes);
                     progressDialog.dismiss();
-
-
                     String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
-
-
 
                     SharedPreferences.Editor editor = sp.edit();
 
@@ -333,6 +341,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             Log.e(LOG_TAG, "added the city in DB" + returnRowID);
 
 
+                            List<City> oneDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes,timzoneId,"one");
+
+                            long returnOneDayRowId = db.createTodayWeather(oneDayForcast);
+
+                            Log.e(LOG_TAG, "added the one day forecast in DB" + returnOneDayRowId);
+
+                            List<City> fiveDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes,timzoneId,"five");
+
+                            long returnFiveDayRowId = db.createForecastWeather(fiveDayForcast);
+
+                            Log.e(LOG_TAG, "added the five day forecast in DB" + returnFiveDayRowId);
 
                             editor = sp.edit();
                             mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

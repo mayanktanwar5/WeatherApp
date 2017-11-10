@@ -31,7 +31,9 @@ public class City implements Serializable{
     private String weatherMain;
     private String weatherDescription;
     private String weatherIcon;
-
+    private String tempDay;
+    private String tempHour;
+    private String tempMonthDay;
 
     private byte[] cityImage;
 
@@ -114,6 +116,8 @@ public class City implements Serializable{
         this.cityCountry = cityCountry;
         this.owId = owId;
     }
+
+
 
     public String getCityName() {
         return cityName;
@@ -215,4 +219,30 @@ public class City implements Serializable{
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getTempDay() {
+        return tempDay;
+    }
+
+    public void setTempDay(String tempDay) {
+        this.tempDay = tempDay;
+    }
+
+    public String getTempHour() {
+        return tempHour;
+    }
+
+    public void setTempHour(String tempHour) {
+        this.tempHour = tempHour;
+    }
+
+    public String getTempMonthDay() {
+        return tempMonthDay;
+    }
+
+    public void setTempMonthDay(String tempMonthDay) {
+        this.tempMonthDay = tempMonthDay;
+    }
+
+
 }
