@@ -20,11 +20,13 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -57,10 +59,14 @@ import com.google.android.gms.location.places.Places;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherService;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherServiceImpl;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -84,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private ViewPagerHandler viewPagerHandler;
     private WeatherService mWeatherService;
     SharedPreferences sp;
+    SimpleDateFormat mSimpleDateFormat;
     // Database Helper
     WeatherAppDbHelper db;
     private ProgressDialog progressDialog;
@@ -102,24 +109,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+
         String currentCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
 
 
-        viewPagerHandler = new ViewPagerHandler(this, this);
+        viewPagerHandler = new ViewPagerHandler(this, this, getSupportActionBar());
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+
         db = new WeatherAppDbHelper(getApplicationContext());
 
-        if(db.getAllCities().size()<=0){
+
+        if (db.getAllCities().size() <= 0) {
 
             getCityByLocation();
         }
-
 
 
     }
@@ -250,60 +259,124 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        progressDialog.hide();
+        progressDialog.setMessage("Fetching City Name");
 
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        StringBuilder builder = new StringBuilder();
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         try {
-            List<Address> address = geoCoder.getFromLocation(lat, lng, 1);
-            int maxLines = address.get(0).getMaxAddressLineIndex();
-            if (address.size() > 0) {
-                Log.e(LOG_TAG, "Country name" + address.get(0).getCountryName());
-                String currentCity = address.get(0).getLocality();
-                String currentCountrty=address.get(0).getCountryName();
-                String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("currentCity", currentCity);
-                editor.putBoolean("isCityChanged", !currentCity.equals(lastCity));
-                editor.commit();
 
+            Log.e(LOG_TAG,"CALLING current city");
+            String s = new CurrentCity(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng)).get();
 
-                // check if city exist in DB
+            String cityNameRes = "";
+            String cityCountryRes = "";
 
-               // db = new WeatherAppDbHelper(getApplicationContext());
+            Log.e(LOG_TAG,"CALLING current city ka result is "+s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
 
-                if(!db.getCityByName(currentCity)){
+                JSONArray results = (JSONArray) jsonObject.get("results");
 
-                    mWeatherService = new WeatherServiceImpl();
-                    try {
+                JSONArray address_components = (JSONArray) results.getJSONObject(0).getJSONArray("address_components");
 
-                        City city=   mWeatherService.getCurrentWeather(currentCity,currentCountrty);
+                for (int i = 0; i < address_components.length(); i++) {
 
-                        long returnRowID = db.createCity(city);
+                    JSONObject item = address_components.getJSONObject(i);
 
-                        Log.e(LOG_TAG,"added the city in DB"+returnRowID);
+                    JSONArray types = item.getJSONArray("types");
 
-                        viewPagerHandler.addCityView(city,viewPagerHandler.getViewCount());
-                        viewPagerHandler.notifyDataChanged();
+                    if (types.getString(0).equals("locality")) {
+                        cityNameRes = item.getString("long_name");
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    }
+
+                    if (types.getString(0).equals("country")) {
+                        cityCountryRes = item.getString("long_name");
                     }
                 }
 
+                Log.e(LOG_TAG,"CALLING current city name is  "+cityNameRes+"currentCIty country "+cityCountryRes);
+                if (!cityNameRes.equals("") && !cityCountryRes.equals("")) {
+
+                    Log.e(LOG_TAG,"ENtered all matched   "+cityNameRes+"currentCIty country "+cityCountryRes);
+                    progressDialog.dismiss();
 
 
+                    String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
+
+
+
+                    SharedPreferences.Editor editor = sp.edit();
+
+                    editor.putString("currentCity", cityNameRes);
+                    editor.putBoolean("isCityChanged", !cityNameRes.equals(lastCity));
+                    editor.commit();
+
+                    // check if city exist in DB
+
+                    db = new WeatherAppDbHelper(getApplicationContext());
+                    boolean x = db.getCityByName(cityNameRes);
+                    Log.e(LOG_TAG, "get city by name  and city name is " + cityNameRes + " found it ==>" + x);
+                    if (!x) {
+
+                        mWeatherService = new WeatherServiceImpl();
+                        try {
+
+                            City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes);
+
+                            Log.e(LOG_TAG,"city OBJECT  MIn temp"+ city.getCityMinTemp());
+                            Log.e(LOG_TAG,"city OBJECT  MAx temp"+ city.getCityMaxTemp());
+                            long returnRowID = db.createCity(city);
+
+                            Log.e(LOG_TAG, "added the city in DB" + returnRowID);
+
+
+
+                            editor = sp.edit();
+                            mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            editor.putString("lastRefreshed",mSimpleDateFormat.format(new Date()));
+                            editor.commit();
+
+                            String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(this).getString("lastRefreshed", "");
+
+                            Log.e(LOG_TAG,lastRefreshed);
+
+                            viewPagerHandler.addCityView(city, viewPagerHandler.getViewCount());
+                            viewPagerHandler.notifyDataChanged();
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+
+                        Toast.makeText(this, "City "+cityNameRes+" is already in View",
+                                Toast.LENGTH_LONG).show();
+
+
+                    }
+
+                } else
+                {
+                    progressDialog.dismiss();
+
+                    Toast.makeText(this, "Unexpected error please try later",
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-        } catch (IOException e) {
-            // Handle IOException
-        } catch (NullPointerException e) {
-            // Handle NullPointerException
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
 

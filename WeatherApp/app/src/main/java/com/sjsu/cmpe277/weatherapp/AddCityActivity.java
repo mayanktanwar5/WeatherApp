@@ -71,7 +71,6 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
 
         mAutocompleteTextView.setAdapter(mCityAdapter);
 
-
     }
 
 

@@ -1,6 +1,7 @@
 package com.sjsu.cmpe277.weatherapp.weatherApi;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.sjsu.cmpe277.weatherapp.City;
 
@@ -50,6 +51,8 @@ public class WeatherServiceImpl    implements WeatherService  {
 
         City cityObj = currentWeatherJsonParser(weatherInfo);
         cityObj.setCityCountry(country);
+
+
         return cityObj;
 
 
@@ -190,7 +193,7 @@ public class WeatherServiceImpl    implements WeatherService  {
 //    }
 
 
-    private JSONObject weatherInfo(String url,boolean mainData){
+    private JSONObject weatherInfo(String url,boolean mainData) throws JSONException {
 
         JSONObject jsonObject =null;
         try {
@@ -201,6 +204,8 @@ public class WeatherServiceImpl    implements WeatherService  {
             e.printStackTrace();
         }
 
+        String x= jsonObject.getString("main");
+        Log.e("WEATHERSRVICE","received the json data"+x);
         return  jsonObject;
     }
 
@@ -213,13 +218,13 @@ public class WeatherServiceImpl    implements WeatherService  {
         int cityId = jsonObject.getInt("id");
         City  city = new City(cityName,cityId);
 
-        city.setCityTemp(mainObj.getLong("temp"));
-        city.setCityHumididty(mainObj.getLong("humidity"));
-        city.setCityMinTemp(mainObj.getLong("temp_min"));
-        city.setCityMaxTemp(mainObj.getLong("temp_max"));
-        city.setCityPressure(mainObj.getLong("pressure"));
+        city.setCityTemp(Double.parseDouble(mainObj.getString("temp")));
+        city.setCityHumididty(Double.parseDouble(mainObj.getString("humidity")));
+        city.setCityMinTemp(Double.parseDouble(mainObj.getString("temp_min")));
+        city.setCityMaxTemp(Double.parseDouble(mainObj.getString("temp_max")));
+        city.setCityPressure(Double.parseDouble(mainObj.getString("pressure")));
         city.setWeatherDescription(weatherObj.getString("description"));
-        city.setWeatherId(weatherObj.getInt("id"));
+        city.setWeatherId(Double.parseDouble(weatherObj.getString("id")));
         city.setWeatherMain(weatherObj.getString("main"));
         city.setWeatherIcon(weatherObj.getString("icon"));
 

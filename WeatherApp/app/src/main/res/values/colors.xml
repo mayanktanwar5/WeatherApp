@@ -2,7 +2,12 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryText">#FFFFFF</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBackgroung">#ccc</color>
     <color name="gray">#444440</color>
+    <color name="colorMaxTemp">#f49542</color>
+    <color name="colorMinTemp">#9fea8a</color>
+
+    <color name="colorViolet">#4d4e8c</color>
 </resources>
