@@ -45,8 +45,9 @@ public class ViewPagerHandler implements Serializable {
     WeatherAppDbHelper db;
     ScrollView v0;
     ActionBar actionBar;
-    SimpleDateFormat fmtOut ;
+    SimpleDateFormat fmtOut;
     Date date;
+
     public ViewPagerHandler(Activity activity, Context ctx, ActionBar actionBar) {
 
         this.ctx = ctx;
@@ -60,7 +61,7 @@ public class ViewPagerHandler implements Serializable {
         weatherFont = Typeface.createFromAsset(activity.getAssets(), "fonts/weather.ttf");
         fontawesome = Typeface.createFromAsset(activity.getAssets(), "fonts/fontawesome-webfont.ttf");
 
-        fmtOut=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        fmtOut = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         getAllCities();
     }
 
@@ -88,6 +89,55 @@ public class ViewPagerHandler implements Serializable {
     }
 
 
+    public void convertUnits(boolean check) {
+
+        if (check) {
+
+
+            for (int i = 0; i < pagerAdapter.getCount(); i++) {
+
+
+                View view = pagerAdapter.getView(i);
+
+                TextView item = (TextView) view.findViewById(R.id.cityTemp);
+                Log.e(LOG_TAG, "COnverting from Celsius to farrheinhit");
+
+                String x = item.getText().toString();
+                x = x.substring(0, x.length() - 1);
+
+                item.setText(celsiusToFahrenheit(Double.parseDouble(x)).intValue() + "°");
+
+            }
+
+
+        } else {
+
+
+            for (int i = 0; i < pagerAdapter.getCount(); i++) {
+
+
+                View view = pagerAdapter.getView(i);
+
+                TextView item = (TextView) view.findViewById(R.id.cityTemp);
+                Log.e(LOG_TAG, "COnverting from Celsius to farrheinhit");
+
+                String x = item.getText().toString();
+                x = x.substring(0, x.length() - 1);
+
+                item.setText(fahrenheitToCelsius(Double.parseDouble(x)).intValue() + "°");
+            }
+        }
+    }
+
+    public Double celsiusToFahrenheit(Double celcius) {
+        return celcius * 1.8 + 32;
+    }
+
+    public Double fahrenheitToCelsius(Double fahrenheit) {
+        return (fahrenheit - 32) / 1.8;
+    }
+
+
     public View createCityView(City city) {
 
         //actionBar.setTitle(city.getCityName());
@@ -112,41 +162,65 @@ public class ViewPagerHandler implements Serializable {
         TextView maxTempIcon = (TextView) v0.findViewById(R.id.maxTempIcon);
         TextView maxTempValue = (TextView) v0.findViewById(R.id.maxTempValue);
 
-        RecyclerView todayWeather =(RecyclerView) v0.findViewById(R.id.todayForecastRecycler) ;
-        RecyclerView forecastWeather =(RecyclerView) v0.findViewById(R.id.futureForecastRecycler) ;
+        RecyclerView todayWeather = (RecyclerView) v0.findViewById(R.id.todayForecastRecycler);
+        RecyclerView forecastWeather = (RecyclerView) v0.findViewById(R.id.futureForecastRecycler);
 
         Log.e("Creating City View", "TEMP====>" + city.getCityTemp());
         Log.e("Creating City View", "DEsC====>" + city.getWeatherDescription());
 
-        cityTemp.setText(Integer.toString(city.getCityTemp().intValue()) + "°");
+
         cityDesc.setText(city.getWeatherDescription());
         cityName.setText(city.getCityName());
 
-        Log.e(LOG_TAG,"Checkin city temp"+city.getCityMinTemp());
 
-        cityMinTemp.setText(Integer.toString(city.getCityMinTemp().intValue()) + "°");
-        cityMaxTemp.setText(Integer.toString(city.getCityMaxTemp().intValue()) + "°");
+        Log.e(LOG_TAG, "Checkin city temp" + city.getCityMinTemp());
+
+        boolean isCelsius = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("isCelsius", true);
+
+        if (!isCelsius){
+
+            cityTemp.setText(celsiusToFahrenheit(city.getCityTemp()).intValue() + "°");
+            cityMinTemp.setText(celsiusToFahrenheit(city.getCityMinTemp()).intValue() + "°");
+            cityMaxTemp.setText(celsiusToFahrenheit(city.getCityMaxTemp()).intValue() + "°");
+            minTempValue.setText(celsiusToFahrenheit(city.getCityMinTemp()).intValue()+"°");
+            maxTempValue.setText(celsiusToFahrenheit(city.getCityMaxTemp()).intValue()+"°");
+
+
+
+
+        } else{
+
+            cityTemp.setText(Integer.toString(city.getCityTemp().intValue()) + "°");
+            cityMinTemp.setText(Integer.toString(city.getCityMinTemp().intValue()) + "°");
+            cityMaxTemp.setText(Integer.toString(city.getCityMaxTemp().intValue()) + "°");
+            minTempValue.setText(Integer.toString(city.getCityMinTemp().intValue())+"°");
+            maxTempValue.setText(Integer.toString(city.getCityMaxTemp().intValue())+"°");
+
+
+
+        }
+
+
 
         //Details part
         pressureValue.setText(Integer.toString(city.getCityPressure().intValue()));
         humidityValue.setText(Integer.toString(city.getCityHumididty().intValue()));
-        minTempValue.setText(Integer.toString(city.getCityMinTemp().intValue()));
-        maxTempValue.setText(Integer.toString(city.getCityMaxTemp().intValue()));
+
 
 
         //Today Later weather
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false);
         todayWeather.setLayoutManager(layoutManager);
 
-        ForecastRecyclerAdapter mForecastRecyclerAdapter = new ForecastRecyclerAdapter(ctx,city.getCityName(),activity);
+        ForecastRecyclerAdapter mForecastRecyclerAdapter = new ForecastRecyclerAdapter(ctx, city.getCityName(), activity);
 
         todayWeather.setAdapter(mForecastRecyclerAdapter);
 
         //Forecast Later weather
-        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,false);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false);
         forecastWeather.setLayoutManager(layoutManager1);
 
-        FiveDayForecastRecyclerAdapter mFiveDayForecastRecyclerAdapter = new FiveDayForecastRecyclerAdapter(ctx,city.getCityName(),activity);
+        FiveDayForecastRecyclerAdapter mFiveDayForecastRecyclerAdapter = new FiveDayForecastRecyclerAdapter(ctx, city.getCityName(), activity);
 
         forecastWeather.setAdapter(mFiveDayForecastRecyclerAdapter);
 
@@ -154,11 +228,13 @@ public class ViewPagerHandler implements Serializable {
 
         String currentCity = PreferenceManager.getDefaultSharedPreferences(ctx).getString("currentCity", "");
 
-        if(currentCity.equals(city.getCityName())){
+        if (currentCity.equals(city.getCityName())) {
 
-            TextView isCurrentCity =  (TextView) v0.findViewById(R.id.isCurrentCity);
+            TextView isCurrentCity = (TextView) v0.findViewById(R.id.isCurrentCity);
 
             isCurrentCity.setVisibility(View.VISIBLE);
+
+            updateOtherCities();
         }
 
 
@@ -177,25 +253,19 @@ public class ViewPagerHandler implements Serializable {
 
         String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(ctx).getString("lastRefreshed", "");
 
-        Log.e(LOG_TAG,"Last refershed value is "+lastRefreshed);
-
+        Log.e(LOG_TAG, "Last refershed value is " + lastRefreshed);
 
 
         try {
-             date= fmtOut.parse(lastRefreshed);
+            date = fmtOut.parse(lastRefreshed);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
-        Log.e(LOG_TAG,"day is"+date.getDay()+" Month is "+date.getMonth()+"  date");
-        lastUpdated.setText(date.getMonth()+"/"+date.getDay()+" "+date.getHours()+":"+date.getMinutes());
+        Log.e(LOG_TAG, "day is" + date.getDay() + " Month is " + date.getMonth() + "  date");
+        lastUpdated.setText(date.getMonth() + "/" + date.getDay() + " " + date.getHours() + ":" + date.getMinutes());
         weatherIcon.setText(setWeatherIcon(city.getWeatherId().intValue(), Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-
-
-
-
-
 
         return v0;
 
@@ -205,6 +275,25 @@ public class ViewPagerHandler implements Serializable {
 
         pagerAdapter.notifyDataSetChanged();
     }
+
+
+    public void updateOtherCities() {
+
+
+        for (int i = 0; i < pagerAdapter.getCount(); i++) {
+
+            View view = pagerAdapter.getView(i);
+
+            TextView item = (TextView) view.findViewById(R.id.isCurrentCity);
+            Log.e(LOG_TAG, "Setting the current city false for previous city");
+
+            item.setVisibility(View.INVISIBLE);
+
+
+        }
+
+    }
+
 
     private String setWeatherIcon(int actualId, int hourOfDay) {
         int id = actualId / 100;

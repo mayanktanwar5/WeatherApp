@@ -42,10 +42,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.app.Activity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,9 +94,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private ViewPagerHandler viewPagerHandler;
     private WeatherService mWeatherService;
 
-    private TextView editPencil ;
+    private TextView editPencil;
     private TextView unitCelsius;
     private TextView unitFharenheit;
+    private Switch unitCswitch;
+    private Switch unitFswitch;
     SharedPreferences sp;
     SimpleDateFormat mSimpleDateFormat;
     // Database Helper
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler,this);
+        recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler, this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -142,10 +146,50 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         db = new WeatherAppDbHelper(getApplicationContext());
 
 
+
+
         if (db.getAllCities().size() <= 0) {
 
             getCityByLocation();
         }
+
+
+        //unit conversion handling
+
+        unitCswitch = (Switch) drawerLayout.findViewById(R.id.tempCSwitch);
+
+
+        // check for default settings on start
+
+        boolean isCelsius = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isCelsius", true);
+
+        if (!isCelsius) {
+            unitCswitch.setChecked(false);
+        }
+
+
+        unitCswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                // convert to F
+                if (!isChecked) {
+
+                    viewPagerHandler.convertUnits(true);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putBoolean("isCelsius", false);
+                    editor.commit();
+
+                } else {
+                    viewPagerHandler.convertUnits(false);
+
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putBoolean("isCelsius", true);
+                    editor.commit();
+                }
+
+            }
+        });
 
 
     }
@@ -284,16 +328,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         try {
 
-            Log.e(LOG_TAG,"CALLING current city");
+            Log.e(LOG_TAG, "CALLING current city");
             String s = new CurrentCity(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng)).get();
 
-            Long tsLong = System.currentTimeMillis()/1000;
+            Long tsLong = System.currentTimeMillis() / 1000;
             String timeStamp = tsLong.toString();
-            String timezone = new CityTimezone(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng),timeStamp).get();
+            String timezone = new CityTimezone(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng), timeStamp).get();
             String cityNameRes = "";
             String cityCountryRes = "";
 
-            Log.e(LOG_TAG,"CALLING current city ka result is "+s);
+            Log.e(LOG_TAG, "CALLING current city ka result is " + s);
             try {
 
                 // City name JSON Parser
@@ -326,10 +370,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 String timzoneId = timezoneJsonObject.getString("timeZoneId");
 
 
-                Log.e(LOG_TAG,"CALLING current city name is  "+cityNameRes+"currentCIty country "+cityCountryRes);
+                Log.e(LOG_TAG, "CALLING current city name is  " + cityNameRes + "currentCIty country " + cityCountryRes);
                 if (!cityNameRes.equals("") && !cityCountryRes.equals("") && !timzoneId.equals("")) {
 
-                    Log.e(LOG_TAG,"ENtered all matched   "+cityNameRes+"currentCIty country "+cityCountryRes);
+                    Log.e(LOG_TAG, "ENtered all matched   " + cityNameRes + "currentCIty country " + cityCountryRes);
                     progressDialog.dismiss();
                     String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
 
@@ -351,20 +395,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                             City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes);
 
-                            Log.e(LOG_TAG,"city OBJECT  MIn temp"+ city.getCityMinTemp());
-                            Log.e(LOG_TAG,"city OBJECT  MAx temp"+ city.getCityMaxTemp());
+                            Log.e(LOG_TAG, "city OBJECT  MIn temp" + city.getCityMinTemp());
+                            Log.e(LOG_TAG, "city OBJECT  MAx temp" + city.getCityMaxTemp());
                             long returnRowID = db.createCity(city);
 
                             Log.e(LOG_TAG, "added the city in DB" + returnRowID);
 
 
-                            List<City> oneDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes,timzoneId,"one");
+                            List<City> oneDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "one");
 
                             long returnOneDayRowId = db.createTodayWeather(oneDayForcast);
 
                             Log.e(LOG_TAG, "added the one day forecast in DB" + returnOneDayRowId);
 
-                            List<City> fiveDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes,timzoneId,"five");
+                            List<City> fiveDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "five");
 
                             long returnFiveDayRowId = db.createForecastWeather(fiveDayForcast);
 
@@ -372,32 +416,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                             editor = sp.edit();
                             mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            editor.putString("lastRefreshed",mSimpleDateFormat.format(new Date()));
+                            editor.putString("lastRefreshed", mSimpleDateFormat.format(new Date()));
                             editor.commit();
 
                             String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(this).getString("lastRefreshed", "");
 
-                            Log.e(LOG_TAG,lastRefreshed);
+                            Log.e(LOG_TAG, lastRefreshed);
 
                             viewPagerHandler.addCityView(city, viewPagerHandler.getViewCount());
                             viewPagerHandler.notifyDataChanged();
 
 
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else{
+                    } else {
 
-                        Toast.makeText(this, "City "+cityNameRes+" is already in View",
+                        Toast.makeText(this, "City " + cityNameRes + " is already in View",
                                 Toast.LENGTH_LONG).show();
 
 
                     }
 
-                } else
-                {
+                } else {
                     progressDialog.dismiss();
 
                     Toast.makeText(this, "Unexpected error please try later",
