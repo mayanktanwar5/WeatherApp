@@ -177,12 +177,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     viewPagerHandler.convertUnits(true);
 
+                    recyclerView.setAdapter(recyclerViewAdapter);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putBoolean("isCelsius", false);
                     editor.commit();
 
                 } else {
                     viewPagerHandler.convertUnits(false);
+                    recyclerView.setAdapter(recyclerViewAdapter);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putBoolean("isCelsius", true);
                     editor.commit();
