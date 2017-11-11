@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -69,8 +70,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
         holder.cityName.setText(cities.get(position).getCityName());
         holder.weatherIcon.setText(setWeatherIcon(cities.get(position).getWeatherId().intValue(), Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
 
+        boolean isCelsius = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("isCelsius", true);
+
+        if(!isCelsius){
+            holder.cityTemp.setText(celsiusToFahrenheit(cities.get(position).getCityTemp()).intValue() + "°");
+        }
+        else{
+            holder.cityTemp.setText(cities.get(position).getCityTemp().intValue()+"°");
+        }
+
     }
 
+
+    public Double celsiusToFahrenheit(Double celcius) {
+        return celcius * 1.8 + 32;
+    }
 
 
     private String setWeatherIcon(int actualId, int hourOfDay) {

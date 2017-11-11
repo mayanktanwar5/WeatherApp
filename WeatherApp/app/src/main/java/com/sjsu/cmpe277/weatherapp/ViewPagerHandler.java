@@ -99,13 +99,37 @@ public class ViewPagerHandler implements Serializable {
 
                 View view = pagerAdapter.getView(i);
 
-                TextView item = (TextView) view.findViewById(R.id.cityTemp);
+                TextView cityTemp = (TextView) view.findViewById(R.id.cityTemp);
+                TextView minTempValue = (TextView) view.findViewById(R.id.minTempValue);
+                TextView cityMinTemp = (TextView) view.findViewById(R.id.cityMinTemp);
+                TextView cityMaxTemp = (TextView) view.findViewById(R.id.cityMaxTemp);
+                TextView maxTempValue = (TextView) view.findViewById(R.id.maxTempValue);
+
+                RecyclerView todayWeather = (RecyclerView) view.findViewById(R.id.todayForecastRecycler);
+                todayWeather.setAdapter(todayWeather.getAdapter());
+
+                RecyclerView forecastWeather = (RecyclerView) view.findViewById(R.id.futureForecastRecycler);
+                forecastWeather.setAdapter(forecastWeather.getAdapter());
+
                 Log.e(LOG_TAG, "COnverting from Celsius to farrheinhit");
 
-                String x = item.getText().toString();
-                x = x.substring(0, x.length() - 1);
+                String cityTempValue = cityTemp.getText().toString();
+                cityTempValue = cityTempValue.substring(0, cityTempValue.length() - 1);
 
-                item.setText(celsiusToFahrenheit(Double.parseDouble(x)).intValue() + "°");
+
+                String minTempValue1 = minTempValue.getText().toString();
+                minTempValue1 = minTempValue1.substring(0, minTempValue1.length() - 1);
+
+                String maxTempValue1 = maxTempValue.getText().toString();
+                maxTempValue1 = maxTempValue1.substring(0, maxTempValue1.length() - 1);
+
+
+                cityTemp.setText(celsiusToFahrenheit(Double.parseDouble(cityTempValue)).intValue() + "°");
+
+                cityMinTemp.setText(celsiusToFahrenheit(Double.parseDouble(minTempValue1)).intValue() + "°");
+                cityMaxTemp.setText(celsiusToFahrenheit(Double.parseDouble(maxTempValue1)).intValue() + "°");
+                minTempValue.setText(celsiusToFahrenheit(Double.parseDouble(minTempValue1)).intValue() + "°");
+                maxTempValue.setText(celsiusToFahrenheit(Double.parseDouble(maxTempValue1)).intValue() + "°");
 
             }
 
@@ -118,13 +142,39 @@ public class ViewPagerHandler implements Serializable {
 
                 View view = pagerAdapter.getView(i);
 
-                TextView item = (TextView) view.findViewById(R.id.cityTemp);
-                Log.e(LOG_TAG, "COnverting from Celsius to farrheinhit");
+                TextView cityTemp = (TextView) view.findViewById(R.id.cityTemp);
+                TextView minTempValue = (TextView) view.findViewById(R.id.minTempValue);
+                TextView cityMinTemp = (TextView) view.findViewById(R.id.cityMinTemp);
+                TextView cityMaxTemp = (TextView) view.findViewById(R.id.cityMaxTemp);
+                TextView maxTempValue = (TextView) view.findViewById(R.id.maxTempValue);
 
-                String x = item.getText().toString();
-                x = x.substring(0, x.length() - 1);
 
-                item.setText(fahrenheitToCelsius(Double.parseDouble(x)).intValue() + "°");
+                RecyclerView todayWeather = (RecyclerView) view.findViewById(R.id.todayForecastRecycler);
+                todayWeather.setAdapter(todayWeather.getAdapter());
+
+                RecyclerView forecastWeather = (RecyclerView) view.findViewById(R.id.futureForecastRecycler);
+                forecastWeather.setAdapter(forecastWeather.getAdapter());
+
+                Log.e(LOG_TAG, "COnverting from Farheniet to Celsius");
+
+                String cityTempValue = cityTemp.getText().toString();
+                cityTempValue = cityTempValue.substring(0, cityTempValue.length() - 1);
+
+
+                String minTempValue1 = minTempValue.getText().toString();
+                minTempValue1 = minTempValue1.substring(0, minTempValue1.length() - 1);
+
+                String maxTempValue1 = maxTempValue.getText().toString();
+                maxTempValue1 = maxTempValue1.substring(0, maxTempValue1.length() - 1);
+
+
+                cityTemp.setText(fahrenheitToCelsius(Double.parseDouble(cityTempValue)).intValue() + "°");
+
+                cityMinTemp.setText(fahrenheitToCelsius(Double.parseDouble(minTempValue1)).intValue() + "°");
+                cityMaxTemp.setText(fahrenheitToCelsius(Double.parseDouble(maxTempValue1)).intValue() + "°");
+                minTempValue.setText(fahrenheitToCelsius(Double.parseDouble(minTempValue1)).intValue() + "°");
+                maxTempValue.setText(fahrenheitToCelsius(Double.parseDouble(maxTempValue1)).intValue() + "°");
+
             }
         }
     }

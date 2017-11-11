@@ -176,13 +176,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 if (!isChecked) {
 
                     viewPagerHandler.convertUnits(true);
+
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putBoolean("isCelsius", false);
                     editor.commit();
 
                 } else {
                     viewPagerHandler.convertUnits(false);
-
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putBoolean("isCelsius", true);
                     editor.commit();

@@ -3,6 +3,7 @@ package com.sjsu.cmpe277.weatherapp;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,12 +57,26 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
     @Override
     public void onBindViewHolder(ForecastRecyclerAdapter.RecylcerViewHolder holder, int position) {
 
+
+        boolean isCelsius = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("isCelsius", true);
+
         holder.weatherIcon.setText(setWeatherIcon(cities.get(position).getWeatherId().intValue(), Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
         holder.dayTime.setText(cities.get(position).getTempHour());
-        holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+
+        if(!isCelsius){
+            holder.weatherDaily.setText(celsiusToFahrenheit(cities.get(position).getCityTemp()).intValue() + "°");
+        }
+        else{
+            holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+        }
+
 
 
         Log.e("ForecastRecyclerAdapter","CAME HERE binding view"+ cities.get(position).getCityTemp() );
+    }
+
+    public Double celsiusToFahrenheit(Double celcius) {
+        return celcius * 1.8 + 32;
     }
 
     @Override

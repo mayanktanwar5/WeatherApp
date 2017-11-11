@@ -3,6 +3,7 @@ package com.sjsu.cmpe277.weatherapp;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,12 +58,28 @@ public class FiveDayForecastRecyclerAdapter extends RecyclerView.Adapter<FiveDay
     public void onBindViewHolder(FiveDayForecastRecyclerAdapter.RecylcerViewHolder holder, int position) {
 
         holder.weatherIcon.setText(setWeatherIcon(cities.get(position).getWeatherId().intValue(), Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-        holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+
+//        holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+
         holder.weatherDay.setText(cities.get(position).getTempDay());
         holder.weatherMonth.setText(cities.get(position).getTempMonthDay());
+        boolean isCelsius = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("isCelsius", true);
+
+        if(!isCelsius){
+            holder.weatherDaily.setText(celsiusToFahrenheit(cities.get(position).getCityTemp()).intValue() + "°");
+        }
+        else{
+            holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+        }
 
         Log.e("FiveDayForecastAdapter","CAME HERE binding view"+ cities.get(position).getCityTemp() );
     }
+
+
+    public Double celsiusToFahrenheit(Double celcius) {
+        return celcius * 1.8 + 32;
+    }
+
 
     @Override
     public int getItemCount() {
