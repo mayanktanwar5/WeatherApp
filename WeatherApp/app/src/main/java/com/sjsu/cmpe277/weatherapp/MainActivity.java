@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -62,6 +63,7 @@ import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherServiceImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -89,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private RecyclerAdapter recyclerViewAdapter;
     private ViewPagerHandler viewPagerHandler;
     private WeatherService mWeatherService;
+
+    private TextView editPencil ;
+    private TextView unitCelsius;
+    private TextView unitFharenheit;
     SharedPreferences sp;
     SimpleDateFormat mSimpleDateFormat;
     // Database Helper
@@ -101,6 +107,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         setContentView(R.layout.activity_main);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        editPencil = (TextView) drawerLayout.findViewById(R.id.editPencil);
+        unitCelsius = (TextView) drawerLayout.findViewById(R.id.tempUnitCelsius);
+        unitFharenheit = (TextView) drawerLayout.findViewById(R.id.tempUnitFarhenheit);
+
+        Typeface fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        Typeface weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
+        editPencil.setTypeface(fontawesome);
+        unitCelsius.setTypeface(weatherFont);
+        unitFharenheit.setTypeface(weatherFont);
+
 
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.toggle_open, R.string.toggle_close);
 
@@ -117,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler);
+        recyclerViewAdapter = new RecyclerAdapter(getApplicationContext(), drawerLayout, viewPagerHandler,this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);

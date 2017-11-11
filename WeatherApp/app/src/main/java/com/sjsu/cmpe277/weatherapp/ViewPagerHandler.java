@@ -9,12 +9,15 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -40,7 +43,7 @@ public class ViewPagerHandler implements Serializable {
     Activity activity;
     private List<City> allCities;
     WeatherAppDbHelper db;
-    LinearLayout v0;
+    ScrollView v0;
     ActionBar actionBar;
     SimpleDateFormat fmtOut ;
     Date date;
@@ -89,7 +92,7 @@ public class ViewPagerHandler implements Serializable {
 
         //actionBar.setTitle(city.getCityName());
 
-        v0 = (LinearLayout) inflater.inflate(R.layout.city_view, null);
+        v0 = (ScrollView) inflater.inflate(R.layout.city_view, null);
 
         TextView cityTemp = (TextView) v0.findViewById(R.id.cityTemp);
         TextView cityDesc = (TextView) v0.findViewById(R.id.cityDesc);
@@ -99,18 +102,55 @@ public class ViewPagerHandler implements Serializable {
         TextView cityMaxTemp = (TextView) v0.findViewById(R.id.cityMaxTemp);
         TextView upArrowIcon = (TextView) v0.findViewById(R.id.cityIconMaxTemp);
         TextView downArrowIcon = (TextView) v0.findViewById(R.id.cityIconMinTemp);
-
         TextView lastUpdated = (TextView) v0.findViewById(R.id.last_refreshed);
+        TextView humidityIcon = (TextView) v0.findViewById(R.id.humidityIcon);
+        TextView humidityValue = (TextView) v0.findViewById(R.id.humidityValue);
+        TextView pressureIcon = (TextView) v0.findViewById(R.id.pressureIcon);
+        TextView pressureValue = (TextView) v0.findViewById(R.id.pressureValue);
+        TextView minTempIcon = (TextView) v0.findViewById(R.id.minTempIcon);
+        TextView minTempValue = (TextView) v0.findViewById(R.id.minTempValue);
+        TextView maxTempIcon = (TextView) v0.findViewById(R.id.maxTempIcon);
+        TextView maxTempValue = (TextView) v0.findViewById(R.id.maxTempValue);
+
+        RecyclerView todayWeather =(RecyclerView) v0.findViewById(R.id.todayForecastRecycler) ;
+        RecyclerView forecastWeather =(RecyclerView) v0.findViewById(R.id.futureForecastRecycler) ;
+
         Log.e("Creating City View", "TEMP====>" + city.getCityTemp());
         Log.e("Creating City View", "DEsC====>" + city.getWeatherDescription());
+
         cityTemp.setText(Integer.toString(city.getCityTemp().intValue()) + "°");
         cityDesc.setText(city.getWeatherDescription());
         cityName.setText(city.getCityName());
 
         Log.e(LOG_TAG,"Checkin city temp"+city.getCityMinTemp());
+
         cityMinTemp.setText(Integer.toString(city.getCityMinTemp().intValue()) + "°");
         cityMaxTemp.setText(Integer.toString(city.getCityMaxTemp().intValue()) + "°");
 
+        //Details part
+        pressureValue.setText(Integer.toString(city.getCityPressure().intValue()));
+        humidityValue.setText(Integer.toString(city.getCityHumididty().intValue()));
+        minTempValue.setText(Integer.toString(city.getCityMinTemp().intValue()));
+        maxTempValue.setText(Integer.toString(city.getCityMaxTemp().intValue()));
+
+
+        //Today Later weather
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,false);
+        todayWeather.setLayoutManager(layoutManager);
+
+        ForecastRecyclerAdapter mForecastRecyclerAdapter = new ForecastRecyclerAdapter(ctx,city.getCityName(),activity);
+
+        todayWeather.setAdapter(mForecastRecyclerAdapter);
+
+        //Forecast Later weather
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,false);
+        forecastWeather.setLayoutManager(layoutManager1);
+
+        FiveDayForecastRecyclerAdapter mFiveDayForecastRecyclerAdapter = new FiveDayForecastRecyclerAdapter(ctx,city.getCityName(),activity);
+
+        forecastWeather.setAdapter(mFiveDayForecastRecyclerAdapter);
+
+        // show current city message
 
         String currentCity = PreferenceManager.getDefaultSharedPreferences(ctx).getString("currentCity", "");
 
@@ -122,11 +162,20 @@ public class ViewPagerHandler implements Serializable {
         }
 
 
+        // set all the icons
+
         weatherIcon.setTypeface(weatherFont);
         downArrowIcon.setTypeface(fontawesome);
-        String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(ctx).getString("lastRefreshed", "");
         upArrowIcon.setTypeface(fontawesome);
+        pressureIcon.setTypeface(weatherFont);
+        humidityIcon.setTypeface(weatherFont);
+        minTempIcon.setTypeface(weatherFont);
+        maxTempIcon.setTypeface(weatherFont);
 
+
+        // update the last refresh flag
+
+        String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(ctx).getString("lastRefreshed", "");
 
         Log.e(LOG_TAG,"Last refershed value is "+lastRefreshed);
 

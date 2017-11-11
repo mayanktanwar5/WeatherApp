@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorBackgroung"
+    android:background="#ccc"
     >
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:textSize="@dimen/text_medium"
+        android:id="@+id/editPencil"
+        android:textColor="@color/colorViolet"
         android:background="@android:color/transparent"
+        android:fontFamily="sans-serif-thin"
+        android:gravity="center"
+        android:textAlignment="textEnd"
         android:padding="5dp"
-        android:src="@drawable/ic_action_edit">
-
-    </ImageButton>
-</RelativeLayout>
+        android:layout_marginRight="10dp"
+        android:text="@string/edit_pencil">
+    </TextView>
+</LinearLayout>

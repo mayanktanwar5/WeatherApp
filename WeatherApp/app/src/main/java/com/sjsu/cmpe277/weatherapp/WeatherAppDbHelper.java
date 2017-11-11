@@ -23,7 +23,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = "WeatherAppDbHelper";
     public static final String DATABASE_NAME = "weatherApp.db";
 
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     // Table Names
     private static final String TABLE_WEATHER = "weather";
@@ -229,7 +229,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             for (City city : cities) {
 
                 values.put(CITY_TEMP, city.getCityTemp());
-
+                values.put(CITY_NAME,city.getCityName());
                 Log.e(LOG_TAG,"Inserting TODAY weather ID"+city.getWeatherId());
                 values.put(WEATHER_ID, city.getWeatherId());
 
@@ -260,17 +260,20 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
 
         try {
             ContentValues values = new ContentValues();
+            Log.e("Forecast weather","cities size is"+cities.size());
             for (City city : cities) {
+
 
                 values.put(CITY_TEMP, city.getCityTemp());
                 values.put(WEATHER_ID, city.getWeatherId());
+                values.put(CITY_NAME,city.getCityName());
                 Log.e(LOG_TAG,"Inserting TODAY humidiirt"+city.getCityHumididty());
                 values.put(HUMIDITY, city.getCityHumididty());
                 Log.e(LOG_TAG,"Inserting TODAY Pressure"+city.getCityPressure());
                 values.put(PRESSURE, city.getCityPressure());
                 values.put(TEMP_HOUR,city.getTempHour());
                 values.put(TEMP_DAY,city.getTempDay());
-                values.put(TEMP_MONTH_DAY,city.getTempDay());
+                values.put(TEMP_MONTH_DAY,city.getTempMonthDay());
                 values.put(MIN_TEMP, city.getCityMinTemp());
                 values.put(MAX_TEMP, city.getCityMaxTemp());
                 city_row_id= db.insert(TABLE_FORECAST_WEATHER, null, values);
@@ -376,6 +379,12 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
+                city.setCityPressure(c.getDouble(c.getColumnIndex(PRESSURE)));
+                city.setCityHumididty(c.getDouble(c.getColumnIndex(HUMIDITY)));
+//                city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
+//                city.setTempDay(c.getString(c.getColumnIndex(TEMP_DAY)));
+//                city.setTempMonthDay(c.getString(c.getColumnIndex(TEMP_MONTH_DAY)));
+
                 // adding to todo list
                 allCities.add(city);
             } while (c.moveToNext());
@@ -404,21 +413,12 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 City city = new City(c.getString(c.getColumnIndex(CITY_NAME))
-                        , c.getString(c.getColumnIndex(CITY_COUNTRY))
-                        , c.getString(c.getColumnIndex(GOOGLE_CITY_ID))
-                        , c.getDouble(c.getColumnIndex(CITY_LONGITUDE))
-                        , c.getDouble(c.getColumnIndex(CITY_LATITUDE))
-                        , c.getBlob(c.getColumnIndex(CITY_IMAGE))
                 );
 
-                city.setWeatherIcon(c.getString(c.getColumnIndex(WEATHER_ICON)));
-                city.setWeatherMain(c.getString(c.getColumnIndex(WEATHER_MAIN)));
                 city.setWeatherId(c.getDouble(c.getColumnIndex(WEATHER_ID)));
-                city.setWeatherDescription(c.getString(c.getColumnIndex(WEATHER_DESCRIPTION)));
                 city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
-
                 city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
 
                 // adding to todo list
@@ -435,7 +435,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
 
         List<City> allCities = new ArrayList<City>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_TODAY_WEATHER + " WHERE "
+        String selectQuery = "SELECT  * FROM " + TABLE_FORECAST_WEATHER + " WHERE "
                 + CITY_NAME + " = ? ;";
 
 
@@ -449,17 +449,9 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 City city = new City(c.getString(c.getColumnIndex(CITY_NAME))
-                        , c.getString(c.getColumnIndex(CITY_COUNTRY))
-                        , c.getString(c.getColumnIndex(GOOGLE_CITY_ID))
-                        , c.getDouble(c.getColumnIndex(CITY_LONGITUDE))
-                        , c.getDouble(c.getColumnIndex(CITY_LATITUDE))
-                        , c.getBlob(c.getColumnIndex(CITY_IMAGE))
                 );
 
-                city.setWeatherIcon(c.getString(c.getColumnIndex(WEATHER_ICON)));
-                city.setWeatherMain(c.getString(c.getColumnIndex(WEATHER_MAIN)));
                 city.setWeatherId(c.getDouble(c.getColumnIndex(WEATHER_ID)));
-                city.setWeatherDescription(c.getString(c.getColumnIndex(WEATHER_DESCRIPTION)));
                 city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));

@@ -18,17 +18,89 @@
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/navigation_menu">
+        android:layout_gravity="start">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+            <include
+                android:id="@+id/app_bar"
+                layout="@layout/navigation_header"></include>
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_below="@id/app_bar">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/recycler_view"
+                android:background="#ccc"
+                android:padding="20dp"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="2">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/tempUnitCelsius"
+                        android:textSize="@dimen/text_medium"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="@color/colorViolet"
+                        android:text="@string/weather_celsius"
+                        />
+                    <Switch
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/tempCSwitch"
+                        android:layout_height="wrap_content"
+                        android:checked="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="2">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_medium"
+                        android:fontFamily="sans-serif-condensed"
+                        android:id="@+id/tempUnitFarhenheit"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textColor="@color/colorViolet"
+                        android:text="@string/weather_fharenheit"
+                        />
+                    <Switch
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/tempFSwitch"
+                        android:layout_height="wrap_content"
+                        android:checked="false"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
 
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

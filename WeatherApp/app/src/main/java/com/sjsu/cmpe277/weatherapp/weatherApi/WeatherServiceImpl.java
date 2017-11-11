@@ -114,7 +114,7 @@ public class WeatherServiceImpl implements WeatherService {
                         JSONObject jsonObject = forecastArray.getJSONObject(i);
                         String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
 
-                        if (Integer.parseInt(res[1]) > 11 && Integer.parseInt(res[1]) < 16) {
+                        if (Integer.parseInt(res[4]) > 11 && Integer.parseInt(res[4]) < 16) {
 
 
                             Log.e("WeatherSercice","met the condition running for ===> "+j);
@@ -140,40 +140,82 @@ public class WeatherServiceImpl implements WeatherService {
 
     private String[] TimezoneConverter(String timeStamp, String timeZone) {
 
-        Date d = new Date((long) Integer.parseInt(timeStamp) * 1000);
-        String[] results = new String[4];
+
+        String[] results = new String[5];
 
         String dayPattern = "EEE";
         String hourPattern = "hh";
-        String monthDayPattern = "MM/dd";
+        String monthDayPattern = "MMM d";
         String am_pmPattern = "aa";
+        String hourCheckPattern="HH";
 
-        SimpleDateFormat sdfDayPattern = new SimpleDateFormat(dayPattern);
-        sdfDayPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
-        String day = sdfDayPattern.format(d);
+        Date d = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss aa zzz");
+        String UTCdate = dateFormat.format(d);
+
+        Log.e("TIMZONE facts ","TIMEZONE is ===>"+timeZone+"timestamp is ===>"+timeStamp);
 
 
-        results[0] = day;
+        Log.e("TIMZONE facts ","UTCdate++++++"+UTCdate);
 
+        Date d1 = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss aa zzz");
+        dateFormat1.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String TimezoneConversion = dateFormat.format(d1);
+
+        Log.e("TIMZONE facts ","TimezoneConversion++++++"+TimezoneConversion);
+
+
+
+        Date d5 = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        SimpleDateFormat sam_pmPattern = new SimpleDateFormat(am_pmPattern);
+        sam_pmPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String amPm = sam_pmPattern.format(d5);
+
+        Log.e("TIMZONE facts ","AM_PM++++++"+amPm);
+        results[3] = amPm;
+
+
+
+        Date d6 = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        SimpleDateFormat checkPatt = new SimpleDateFormat(hourCheckPattern);
+        checkPatt.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String check = checkPatt.format(d6);
+
+        Log.e("TIMZONE facts ","hourCheckPattern++++++"+check);
+        results[4] = check;
+
+
+
+
+
+        Date d3 = new Date((long) Integer.parseInt(timeStamp) * 1000);
         SimpleDateFormat shourPattern = new SimpleDateFormat(hourPattern);
         shourPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
-        String hour = shourPattern.format(d);
+        String hour = shourPattern.format(d3);
 
+        Log.e("TIMZONE facts ","hour++++++"+hour);
         results[1] = hour;
 
 
+        Date d2 = new Date((long) Integer.parseInt(timeStamp) * 1000);
+        SimpleDateFormat sdfDayPattern = new SimpleDateFormat(dayPattern);
+        sdfDayPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
+        String day = sdfDayPattern.format(d2);
+
+        Log.e("TIMZONE facts ","DAY++++++"+day);
+
+        results[0] = day;
+
+
+
+        Date d4 = new Date((long) Integer.parseInt(timeStamp) * 1000);
         SimpleDateFormat smonthDayPattern = new SimpleDateFormat(monthDayPattern);
         smonthDayPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
-        String monthDay = shourPattern.format(d);
-
+        String monthDay = smonthDayPattern.format(d4);
+        Log.e("TIMZONE facts ","MONTH-DAY++++++"+monthDay);
         results[2] = monthDay;
 
-
-        SimpleDateFormat sam_pmPattern = new SimpleDateFormat(am_pmPattern);
-        sam_pmPattern.setTimeZone(TimeZone.getTimeZone(timeZone));
-        String amPm = shourPattern.format(d);
-
-        results[3] = amPm;
 
         return results;
 
