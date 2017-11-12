@@ -13,11 +13,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/WeatherAppDbHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/WeatherAppDbHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/city_list_card.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/city_list_card.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/navigation_header.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/navigation_header.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="WeatherApp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,18 +60,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="city_list_card.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="city_list_card.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/city_list_card.xml">
           <provider editor-type-id="android-designer2">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
-              <caret line="83" column="23" lean-forward="true" selection-start-line="83" selection-start-column="23" selection-end-line="83" selection-end-column="23" />
+            <state relative-caret-position="302">
+              <caret line="82" column="28" lean-forward="false" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="60" />
               <folding>
-                <element signature="e#2202#2221#0" expanded="true" />
-                <element signature="e#2736#2755#0" expanded="true" />
-                <element signature="e#3892#3911#0" expanded="true" />
+                <element signature="e#2299#2318#0" expanded="true" />
+                <element signature="e#2928#2947#0" expanded="true" />
+                <element signature="e#3579#3598#0" expanded="true" />
+                <element signature="e#4298#4317#0" expanded="true" />
+                <element signature="e#5086#5105#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,27 +102,24 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="240" column="90" lean-forward="false" selection-start-line="240" selection-start-column="90" selection-end-line="240" selection-end-column="90" />
+            <state relative-caret-position="377">
+              <caret line="221" column="61" lean-forward="false" selection-start-line="221" selection-start-column="61" selection-end-line="221" selection-end-column="61" />
               <folding>
-                <element signature="e#7374#8159#0" expanded="true" />
-                <element signature="e#8158#8159#0" expanded="true" />
-                <element signature="e#8205#8986#0" expanded="true" />
-                <element signature="e#8985#8986#0" expanded="true" />
+                <element signature="e#7349#8233#0" expanded="true" />
+                <element signature="e#8232#8233#0" expanded="true" />
+                <element signature="e#8279#9069#0" expanded="true" />
+                <element signature="e#9068#9069#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RecyclerAdapter.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RecyclerAdapter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="516">
-              <caret line="193" column="24" lean-forward="false" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
-              <folding>
-                <element signature="e#5910#7245#0" expanded="true" />
-                <element signature="e#7244#7245#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="668">
+              <caret line="227" column="99" lean-forward="false" selection-start-line="227" selection-start-column="99" selection-end-line="227" selection-end-column="99" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2157,9 +2152,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/navigation_header.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/WeatherAppDbHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/city_list_card.xml" />
       </list>
     </option>
@@ -2514,7 +2509,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510487897526" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510513007694" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2561,7 +2556,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510487897527" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510513007694" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2743,7 +2738,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510487897529" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510513007694" />
       </method>
     </configuration>
     <list size="1">
@@ -2791,7 +2786,7 @@
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329235" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329235" sideWeight="0.503231" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32650274" sideWeight="0.5541195" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32650274" sideWeight="0.5541195" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -3269,19 +3264,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="240" column="90" lean-forward="false" selection-start-line="240" selection-start-column="90" selection-end-line="240" selection-end-column="90" />
-          <folding>
-            <element signature="e#7374#8159#0" expanded="true" />
-            <element signature="e#8158#8159#0" expanded="true" />
-            <element signature="e#8205#8986#0" expanded="true" />
-            <element signature="e#8985#8986#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/WeatherAppDbHelper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
@@ -3290,13 +3272,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="516">
-          <caret line="193" column="24" lean-forward="false" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
+        <state relative-caret-position="377">
+          <caret line="221" column="61" lean-forward="false" selection-start-line="221" selection-start-column="61" selection-end-line="221" selection-end-column="61" />
           <folding>
-            <element signature="e#5910#7245#0" expanded="true" />
-            <element signature="e#7244#7245#0" expanded="true" />
+            <element signature="e#7349#8233#0" expanded="true" />
+            <element signature="e#8232#8233#0" expanded="true" />
+            <element signature="e#8279#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3306,13 +3290,23 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="83" column="23" lean-forward="true" selection-start-line="83" selection-start-column="23" selection-end-line="83" selection-end-column="23" />
+        <state relative-caret-position="302">
+          <caret line="82" column="28" lean-forward="false" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="60" />
           <folding>
-            <element signature="e#2202#2221#0" expanded="true" />
-            <element signature="e#2736#2755#0" expanded="true" />
-            <element signature="e#3892#3911#0" expanded="true" />
+            <element signature="e#2299#2318#0" expanded="true" />
+            <element signature="e#2928#2947#0" expanded="true" />
+            <element signature="e#3579#3598#0" expanded="true" />
+            <element signature="e#4298#4317#0" expanded="true" />
+            <element signature="e#5086#5105#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/RecyclerAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="668">
+          <caret line="227" column="99" lean-forward="false" selection-start-line="227" selection-start-column="99" selection-end-line="227" selection-end-column="99" />
+          <folding />
         </state>
       </provider>
     </entry>

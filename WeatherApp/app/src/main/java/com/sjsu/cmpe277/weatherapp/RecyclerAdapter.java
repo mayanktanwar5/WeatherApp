@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -84,10 +85,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
 
         if(isEditClicked){
 
-            holder.trashicon.setVisibility(View.VISIBLE);
+            holder.deleteButtonContainer.setVisibility(View.VISIBLE);
         }else{
 
-            holder.trashicon.setVisibility(View.GONE);
+            holder.deleteButtonContainer.setVisibility(View.GONE);
         }
 
     }
@@ -150,6 +151,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
         public TextView cityName;
         public TextView cityTemp;
         public TextView weatherIcon;
+        public LinearLayout deleteButtonContainer;
+        public LinearLayout cityCardContent;
         TextView trashicon;
         private   DrawerLayout mDrawerLayout;
         private ViewPagerHandler mViewPagerHandler;
@@ -168,45 +171,76 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
             cityName = (TextView) itemView.findViewById(R.id.cardWeatherCityName);
             weatherIcon = (TextView) itemView.findViewById(R.id.cardWeatherIcon);
             trashicon =(TextView)itemView.findViewById(R.id.deleteButton);
+            deleteButtonContainer=(LinearLayout)itemView.findViewById(R.id.deleteButtonContainer);
+            cityCardContent=(LinearLayout)itemView.findViewById(R.id.city_card_content);
+
             weatherIcon.setTypeface(weatherFont);
             trashicon.setTypeface(fontawesome);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    int position = getAdapterPosition();
-                    Log.e(LOG_TAG,"Item clicked position is "+position);
-
-                    if(v.findViewById(R.id.deleteButton).getVisibility()==View.GONE){
-
-                        Log.e(LOG_TAG,"ViewPagehandler page"+mViewPagerHandler);
-                        mViewPagerHandler.setCurrentPage(mViewPagerHandler.getViewPageAtPosition(position));
-                        mDrawerLayout.closeDrawer(Gravity.START,false);
-                    } else if(v.findViewById(R.id.deleteButton).getVisibility()==View.VISIBLE){
-
-                       cities.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position,cities.size());
-
-                        mViewPagerHandler.removeView(mViewPagerHandler.getViewPageAtPosition(position));
-
-                        TextView cityN = (TextView) v.findViewById(R.id.cardWeatherCityName);
-                        db.deleteCity(cityN.getText().toString());
-                        db.deleteTodayForecastWeather(cityN.getText().toString());
-                        db.deleteTodayWeather(cityN.getText().toString());
-
-
-                    }
-
-
-                }
-            });
+            deleteButtonContainer.setOnClickListener(this);
+            cityCardContent.setOnClickListener(this);
+//
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    int position = getAdapterPosition();
+//                    Log.e(LOG_TAG,"Item clicked position is "+position);
+//
+//                    if(v.findViewById(R.id.deleteButton).getVisibility()==View.GONE){
+//
+//                        Log.e(LOG_TAG,"ViewPagehandler page"+mViewPagerHandler);
+//                        mViewPagerHandler.setCurrentPage(mViewPagerHandler.getViewPageAtPosition(position));
+//                        mDrawerLayout.closeDrawer(Gravity.START,false);
+//                    } else if(v.findViewById(R.id.deleteButton).getVisibility()==View.VISIBLE){
+//
+//                        cities.remove(position);
+//                        notifyItemRemoved(position);
+//                        notifyItemRangeChanged(position,cities.size());
+//
+//                        mViewPagerHandler.removeView(mViewPagerHandler.getViewPageAtPosition(position));
+//
+//                        TextView cityN = (TextView) v.findViewById(R.id.cardWeatherCityName);
+//                        db.deleteCity(cityN.getText().toString());
+//                        db.deleteTodayForecastWeather(cityN.getText().toString());
+//                        db.deleteTodayWeather(cityN.getText().toString());
+//
+//
+//                    }
+//
+//
+//                }
+//            });
         }
 
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            if(v.equals(deleteButtonContainer)){
+
+
+
+                db.deleteCity(cities.get(position).getCityName());
+                db.deleteTodayForecastWeather(cities.get(position).getCityName());
+                db.deleteTodayWeather(cities.get(position).getCityName());
+                Log.e(LOG_TAG,"Deleted all the cities for  page"+cities.get(position).getCityName());
+
+                cities.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position,cities.size());
+
+                mViewPagerHandler.removeView(mViewPagerHandler.getViewPageAtPosition(position));
+
+            }
+
+            if(v.equals(cityCardContent) && deleteButtonContainer.getVisibility()==View.GONE){
+
+                Log.e(LOG_TAG,"ViewPagehandler page"+mViewPagerHandler);
+                mViewPagerHandler.setCurrentPage(mViewPagerHandler.getViewPageAtPosition(position));
+                mDrawerLayout.closeDrawer(Gravity.START,false);
+            }
         }
     }
 }

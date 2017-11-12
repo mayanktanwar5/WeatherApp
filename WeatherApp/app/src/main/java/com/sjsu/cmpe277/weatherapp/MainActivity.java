@@ -96,11 +96,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private WeatherService mWeatherService;
 
     private TextView editPencil;
-    private TextView deleteButton;
     private TextView cancelPencil;
     private TextView unitCelsius;
     private Switch unitCswitch;
-    private Switch unitFswitch;
     SharedPreferences sp;
     SimpleDateFormat mSimpleDateFormat;
     // Database Helper
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         editPencil = (TextView) drawerLayout.findViewById(R.id.editPencil);
         cancelPencil = (TextView) drawerLayout.findViewById(R.id.cancelPencil);
         unitCelsius = (TextView) drawerLayout.findViewById(R.id.tempUnitCelsius);
-        deleteButton = (TextView) drawerLayout.findViewById(R.id.deleteButton);
 
          fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
@@ -150,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         db = new WeatherAppDbHelper(getApplicationContext());
 
 
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("isEdit", false);
+        editor.commit();
 
         if (db.getAllCities().size() <= 0) {
 
@@ -213,12 +213,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     if(x!=null){
                         Log.e(LOG_TAG," value "+x.itemView);
-                         x.itemView.findViewById(R.id.deleteButton).setVisibility(View.VISIBLE);
+                         x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.VISIBLE);
                     }
 
                 }
-                 editPencil.setVisibility(View.GONE);
-                cancelPencil.setVisibility(View.VISIBLE);
+                if(recyclerView.getAdapter().getItemCount()>0){
+                    editPencil.setVisibility(View.GONE);
+                    cancelPencil.setVisibility(View.VISIBLE);
+                }
+
 
             }
         });
@@ -238,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     if(x!=null){
                         Log.e(LOG_TAG," value "+x.itemView);
-                        x.itemView.findViewById(R.id.deleteButton).setVisibility(View.GONE);
+                        x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.GONE);
                     }
 
                 }
