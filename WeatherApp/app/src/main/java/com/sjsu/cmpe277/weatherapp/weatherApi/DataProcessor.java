@@ -187,7 +187,7 @@ public class DataProcessor {
                 Log.e(LOG_TAG, "added the five day forecast in DB" + returnFiveDayRowId);
 
                 SharedPreferences.Editor editor = sp.edit();
-                mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                mSimpleDateFormat = new SimpleDateFormat("MMM d hh:mm a");
                 editor.putString("lastRefreshed", mSimpleDateFormat.format(new Date()));
                 editor.commit();
 

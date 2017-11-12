@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -211,6 +212,7 @@ public class ViewPagerHandler implements Serializable {
         TextView minTempValue = (TextView) v0.findViewById(R.id.minTempValue);
         TextView maxTempIcon = (TextView) v0.findViewById(R.id.maxTempIcon);
         TextView maxTempValue = (TextView) v0.findViewById(R.id.maxTempValue);
+        TextClock cityViewTime = (TextClock) v0.findViewById(R.id.cityViewTime);
 
         RecyclerView todayWeather = (RecyclerView) v0.findViewById(R.id.todayForecastRecycler);
         RecyclerView forecastWeather = (RecyclerView) v0.findViewById(R.id.futureForecastRecycler);
@@ -221,7 +223,7 @@ public class ViewPagerHandler implements Serializable {
 
         cityDesc.setText(city.getWeatherDescription());
         cityName.setText(city.getCityName());
-
+        cityViewTime.setTimeZone(city.getTimeZone());
 
         Log.e(LOG_TAG, "Checkin city temp" + city.getCityMinTemp());
 
@@ -305,16 +307,7 @@ public class ViewPagerHandler implements Serializable {
 
         Log.e(LOG_TAG, "Last refershed value is " + lastRefreshed);
 
-
-        try {
-            date = fmtOut.parse(lastRefreshed);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-        Log.e(LOG_TAG, "day is" + date.getDay() + " Month is " + date.getMonth() + "  date");
-        lastUpdated.setText(date.getMonth() + "/" + date.getDay() + " " + date.getHours() + ":" + date.getMinutes());
+        lastUpdated.setText(lastRefreshed);
         weatherIcon.setText(setWeatherIcon(city.getWeatherId().intValue(), Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
 
         return v0;

@@ -119,12 +119,19 @@ public class WeatherServiceImpl implements WeatherService {
                         if (Integer.parseInt(res[4]) > 11 && Integer.parseInt(res[4]) < 16) {
 
 
+
+                            City temp =  getCurrentWeather(city,country,timeZone);
+
                             Log.e("WeatherSercice","met the condition running for ===> "+j);
                             cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
+
 
                             cityRes.setTempDay(res[0]);
                             cityRes.setTimeZone(timeZone);
                             cityRes.setTempMonthDay(res[2]);
+                            cityRes.setCityMaxTemp(temp.getCityMaxTemp());
+                            cityRes.setCityMinTemp(temp.getCityMinTemp());
+
                             weathers.add(cityRes);
                             j++;
                         }
@@ -186,9 +193,6 @@ public class WeatherServiceImpl implements WeatherService {
 
         Log.e("TIMZONE facts ","hourCheckPattern++++++"+check);
         results[4] = check;
-
-
-
 
 
         Date d3 = new Date((long) Integer.parseInt(timeStamp) * 1000);

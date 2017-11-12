@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialog1;
     Typeface fontawesome;
+    boolean isEdit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,15 +118,43 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         cancelPencil = (TextView) drawerLayout.findViewById(R.id.cancelPencil);
         unitCelsius = (TextView) drawerLayout.findViewById(R.id.tempUnitCelsius);
 
-         fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
 
         editPencil.setTypeface(fontawesome);
         cancelPencil.setTypeface(fontawesome);
         unitCelsius.setTypeface(weatherFont);
 
+         isEdit = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isEdit", true);
+        mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.toggle_open, R.string.toggle_close) {
 
-        mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.toggle_open, R.string.toggle_close);
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+
+//                if(isEdit){
+
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putBoolean("isEdit", false);
+                    editor.commit();
+                    for (int i = 0; i < recyclerView.getAdapter().getItemCount(); i++) {
+
+                        RecyclerView.ViewHolder x = recyclerView.findViewHolderForAdapterPosition(i);
+
+                        if (x != null) {
+                            Log.e(LOG_TAG, " value " + x.itemView);
+                            x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.GONE);
+                        }
+
+                    }
+                    cancelPencil.setVisibility(View.GONE);
+                    editPencil.setVisibility(View.VISIBLE);
+                }
+
+            //}
+
+        };
 
         drawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
@@ -197,9 +226,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
 
 
-
-
-
         editPencil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,17 +233,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putBoolean("isEdit", true);
                 editor.commit();
-                for (int i=0;i<recyclerView.getAdapter().getItemCount();i++){
+                for (int i = 0; i < recyclerView.getAdapter().getItemCount(); i++) {
 
                     RecyclerView.ViewHolder x = recyclerView.findViewHolderForAdapterPosition(i);
 
-                    if(x!=null){
-                        Log.e(LOG_TAG," value "+x.itemView);
-                         x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.VISIBLE);
+                    if (x != null) {
+                        Log.e(LOG_TAG, " value " + x.itemView);
+                        x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.VISIBLE);
                     }
 
                 }
-                if(recyclerView.getAdapter().getItemCount()>0){
+                if (recyclerView.getAdapter().getItemCount() > 0) {
                     editPencil.setVisibility(View.GONE);
                     cancelPencil.setVisibility(View.VISIBLE);
                 }
@@ -227,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
 
 
-
         cancelPencil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,12 +260,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putBoolean("isEdit", false);
                 editor.commit();
-                for (int i=0;i<recyclerView.getAdapter().getItemCount();i++){
+                for (int i = 0; i < recyclerView.getAdapter().getItemCount(); i++) {
 
                     RecyclerView.ViewHolder x = recyclerView.findViewHolderForAdapterPosition(i);
 
-                    if(x!=null){
-                        Log.e(LOG_TAG," value "+x.itemView);
+                    if (x != null) {
+                        Log.e(LOG_TAG, " value " + x.itemView);
                         x.itemView.findViewById(R.id.deleteButtonContainer).setVisibility(View.GONE);
                     }
 
@@ -251,9 +276,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         });
 
+
     }
 
-
+    ;
 
 
     @Override
@@ -327,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 });
                 progressDialog1.show();
 
-                DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler,recyclerViewAdapter);
+                DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler, recyclerViewAdapter);
                 dp.processTimeZoneData(false);
 
             }
@@ -428,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler,recyclerViewAdapter);
+        DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler, recyclerViewAdapter);
         dp.processTimeZoneData(true);
 
 //

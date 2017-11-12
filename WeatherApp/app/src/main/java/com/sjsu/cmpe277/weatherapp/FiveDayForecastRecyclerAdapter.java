@@ -67,9 +67,14 @@ public class FiveDayForecastRecyclerAdapter extends RecyclerView.Adapter<FiveDay
 
         if(!isCelsius){
             holder.weatherDaily.setText(celsiusToFahrenheit(cities.get(position).getCityTemp()).intValue() + "°");
+            holder.weatherMaxTemp.setText(celsiusToFahrenheit(cities.get(position).getCityMaxTemp()).intValue() + "°");
+            holder.weatherMinTemp.setText(celsiusToFahrenheit(cities.get(position).getCityMinTemp()).intValue() + "°");
         }
         else{
             holder.weatherDaily.setText(cities.get(position).getCityTemp().intValue()+"°");
+            holder.weatherMaxTemp.setText(cities.get(position).getCityMaxTemp().intValue()+"°");
+            holder.weatherMinTemp.setText(cities.get(position).getCityMinTemp().intValue()+"°");
+
         }
 
         Log.e("FiveDayForecastAdapter","CAME HERE binding view"+ cities.get(position).getCityTemp() );
@@ -129,7 +134,13 @@ public class FiveDayForecastRecyclerAdapter extends RecyclerView.Adapter<FiveDay
         TextView weatherDaily;
         TextView weatherDay;
         TextView weatherMonth;
+        TextView weatherMaxTemp;
+        TextView weatherMinTemp;
+        TextView weatherMaxTempIcon;
+        TextView weatherMinIcon;
+
         Typeface weatherFont = Typeface.createFromAsset(activity.getAssets(), "fonts/weather.ttf");
+        Typeface fontawesome = Typeface.createFromAsset(activity.getAssets(), "fonts/fontawesome-webfont.ttf");
 
         public RecylcerViewHolder(View itemView) {
             super(itemView);
@@ -138,7 +149,14 @@ public class FiveDayForecastRecyclerAdapter extends RecyclerView.Adapter<FiveDay
             weatherDaily = (TextView) itemView.findViewById(R.id.weather_temp_forecast);
             weatherDay = (TextView) itemView.findViewById(R.id.dayForecast);
             weatherMonth = (TextView) itemView.findViewById(R.id.dayMonthForecast);
+            weatherMaxTemp = (TextView) itemView.findViewById(R.id.weather_max_temp_forecast);
+            weatherMinTemp = (TextView) itemView.findViewById(R.id.weather_min_temp_forecast);
+            weatherMaxTempIcon = (TextView) itemView.findViewById(R.id.weather_max_temp_forecast_icon);
+            weatherMinIcon = (TextView) itemView.findViewById(R.id.weather_min_temp_forecast_icon);
+
             weatherIcon.setTypeface(weatherFont);
+            weatherMinIcon.setTypeface(fontawesome);
+            weatherMaxTempIcon.setTypeface(fontawesome);
         }
     }
 
