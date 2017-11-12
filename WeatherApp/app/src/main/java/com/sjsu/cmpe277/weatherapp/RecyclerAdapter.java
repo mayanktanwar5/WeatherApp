@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -64,6 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
         return viewHolder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onBindViewHolder(RecylcerViewHolder holder, int position) {
 
@@ -90,6 +94,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
 
             holder.deleteButtonContainer.setVisibility(View.GONE);
         }
+
+        Log.e(LOG_TAG,"SETTING THE TIMEZONE "+cities.get(position).getTimeZone());
+//        holder.textClock.setFormat24Hour("hh:mm:ss a  EEE MMM d");
+        holder.textClock.setTimeZone(cities.get(position).getTimeZone());
 
     }
 
@@ -157,7 +165,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
         private   DrawerLayout mDrawerLayout;
         private ViewPagerHandler mViewPagerHandler;
         Typeface fontawesome;
-
+        TextClock textClock;
 
         public RecylcerViewHolder(View itemView, DrawerLayout drawerLayout , ViewPagerHandler viewPagerHandler, Activity activity, final List<City> cities)  {
 
@@ -173,7 +181,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recylc
             trashicon =(TextView)itemView.findViewById(R.id.deleteButton);
             deleteButtonContainer=(LinearLayout)itemView.findViewById(R.id.deleteButtonContainer);
             cityCardContent=(LinearLayout)itemView.findViewById(R.id.city_card_content);
-
+            textClock = (TextClock) itemView.findViewById(R.id.cityTime);
             weatherIcon.setTypeface(weatherFont);
             trashicon.setTypeface(fontawesome);
 

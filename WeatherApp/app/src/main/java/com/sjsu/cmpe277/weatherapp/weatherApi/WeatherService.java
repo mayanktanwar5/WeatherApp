@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public interface WeatherService {
-    public City getCurrentWeather(String city, String country) throws JSONException;
+    public City getCurrentWeather(String city, String country, String timeZone) throws JSONException;
     public List<City> getForecast(String city, String country, String timeZone, String forecatType );
     //public City[] getFiveDayForecast(String city, String country, String timeZone);
     //public String getCity(double latitude, double longitude);

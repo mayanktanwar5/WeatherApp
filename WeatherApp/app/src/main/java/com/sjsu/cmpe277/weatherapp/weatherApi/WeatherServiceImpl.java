@@ -48,13 +48,14 @@ public class WeatherServiceImpl implements WeatherService {
     OpenWeatherMap owm = new OpenWeatherMap(units, "647f4536db207983f6f2345572c9492f");
 
     @Override
-    public City getCurrentWeather(String city, String country) throws JSONException {
+    public City getCurrentWeather(String city, String country,String timezone) throws JSONException {
         DailyWeather dailyWeather = null;
         JSONObject weatherInfo = weatherInfo("http://api.openweathermap.org/data/2.5/weather?q=" + getSuitableLocation(city) + "," + getSuitableLocation(country) + "&units=metric" + "&appid=647f4536db207983f6f2345572c9492f", true);
 
         City cityObj = currentWeatherJsonParser(weatherInfo);
         cityObj.setCityCountry(country);
-
+        Log.e("Setting timezone"," TIMEZONE get is "+timezone);
+        cityObj.setTimeZone(timezone);
 
         return cityObj;
 
@@ -103,6 +104,7 @@ public class WeatherServiceImpl implements WeatherService {
 
                         String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
                         cityRes.setTempHour(res[1] + " " + res[3].toLowerCase());
+                        cityRes.setTimeZone(timeZone);
                         weathers.add(cityRes) ;
                     }
 
@@ -121,7 +123,7 @@ public class WeatherServiceImpl implements WeatherService {
                             cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
 
                             cityRes.setTempDay(res[0]);
-
+                            cityRes.setTimeZone(timeZone);
                             cityRes.setTempMonthDay(res[2]);
                             weathers.add(cityRes);
                             j++;

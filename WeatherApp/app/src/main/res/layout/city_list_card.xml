@@ -76,11 +76,9 @@
                             android:layout_weight="1"
                             android:fontFamily="sans-serif"
                             android:gravity="center"
-                            android:format24hours="hh:mm:ss a  EEE MMM d"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryText"
                             android:textSize="@dimen/text_small"
-                            tools:targetApi="jelly_bean_mr1"
 
                             />
                     </LinearLayout>

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.sjsu.cmpe277.weatherapp.City;
 import com.sjsu.cmpe277.weatherapp.CityTimezone;
 import com.sjsu.cmpe277.weatherapp.CurrentCity;
+import com.sjsu.cmpe277.weatherapp.RecyclerAdapter;
 import com.sjsu.cmpe277.weatherapp.ViewPagerHandler;
 import com.sjsu.cmpe277.weatherapp.WeatherAppDbHelper;
 
@@ -41,17 +42,19 @@ public class DataProcessor {
     WeatherAppDbHelper db;
     private WeatherService mWeatherService;
     private ViewPagerHandler viewPagerHandler;
+    private RecyclerAdapter recyclerAdapter;
     SimpleDateFormat mSimpleDateFormat;
     SharedPreferences sp;
 
 
-    public DataProcessor(Double lat, Double lng, Activity activity, Context ctx, ProgressDialog progressDialog, ViewPagerHandler viewPagerHandler) {
+    public DataProcessor(Double lat, Double lng, Activity activity, Context ctx, ProgressDialog progressDialog, ViewPagerHandler viewPagerHandler, RecyclerAdapter recyclerAdapter) {
         this.lat = lat;
         this.lng = lng;
         this.activity = activity;
         this.ctx = ctx;
         this.progressDialog = progressDialog;
         this.viewPagerHandler = viewPagerHandler;
+        this.recyclerAdapter=recyclerAdapter;
 
         sp = PreferenceManager.getDefaultSharedPreferences(ctx);
     }
@@ -108,7 +111,7 @@ public class DataProcessor {
                 if (!cityNameRes.equals("") && !cityCountryRes.equals("") && !timzoneId.equals("")) {
 
                     Log.e(LOG_TAG, "ENtered all matched   " + cityNameRes + "currentCIty country " + cityCountryRes);
-                    progressDialog.dismiss();
+
 
 //                    SharedPreferences sp;
                     String lastCity = PreferenceManager.getDefaultSharedPreferences(ctx).getString("currentCity", "");
@@ -126,7 +129,7 @@ public class DataProcessor {
 
 
                     getForecastAndAdd(cityNameRes, cityCountryRes, timzoneId);
-
+                    progressDialog.dismiss();
 
 
                 } else {
@@ -162,7 +165,7 @@ public class DataProcessor {
             mWeatherService = new WeatherServiceImpl();
             try {
 
-                City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes);
+                City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes,timzoneId);
 
                 Log.e(LOG_TAG, "city OBJECT  MIn temp" + city.getCityMinTemp());
                 Log.e(LOG_TAG, "city OBJECT  MAx temp" + city.getCityMaxTemp());
@@ -195,6 +198,9 @@ public class DataProcessor {
                 viewPagerHandler.addCityView(city, viewPagerHandler.getViewCount() );
                 viewPagerHandler.notifyDataChanged();
                 viewPagerHandler.setCurrentPage(viewPagerHandler.getViewPageAtPosition(viewPagerHandler.getViewCount()-1));
+
+                recyclerAdapter.cities.add(city);
+                recyclerAdapter.notifyDataSetChanged();
 
             } catch (JSONException e) {
                 e.printStackTrace();

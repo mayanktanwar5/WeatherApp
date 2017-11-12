@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 });
                 progressDialog1.show();
 
-                DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler);
+                DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler,recyclerViewAdapter);
                 dp.processTimeZoneData(false);
 
             }
@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler);
+        DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler,recyclerViewAdapter);
         dp.processTimeZoneData(true);
 
 //

@@ -34,6 +34,7 @@ public class City implements Serializable{
     private String tempDay;
     private String tempHour;
     private String tempMonthDay;
+    private String timeZone;
 
     private byte[] cityImage;
 
@@ -244,5 +245,11 @@ public class City implements Serializable{
         this.tempMonthDay = tempMonthDay;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
 
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
 }

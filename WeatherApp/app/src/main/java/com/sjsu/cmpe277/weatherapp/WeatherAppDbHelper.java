@@ -23,7 +23,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = "WeatherAppDbHelper";
     public static final String DATABASE_NAME = "weatherApp.db";
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 15;
 
     // Table Names
     private static final String TABLE_WEATHER = "weather";
@@ -55,6 +55,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String CITY_IMAGE = "city_image";
     private static final String ROW_CREATED_AT = "create_date";
     private static final String UPDATE_DATE = "update_date";
+    private static final String TIMEZONE = "timezone";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -73,6 +74,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             + WEATHER_DESCRIPTION + " TEXT,"
             + WEATHER_ICON + " TEXT,"
             + WEATHER_MAIN + " TEXT,"
+            + TIMEZONE + " TEXT,"
             + WEATHER_ID + " INTEGER,"
             + MIN_TEMP + " DOUBLE,"
             + MAX_TEMP + " DOUBLE,"
@@ -96,6 +98,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             + CITY_NAME + " TEXT ,"
             + CITY_COUNTRY + " TEXT,"
             + CITY_TEMP + " DOUBLE,"
+            + TIMEZONE + " TEXT,"
             + WEATHER_ID + " INTEGER,"
             + MIN_TEMP + " DOUBLE,"
             + MAX_TEMP + " DOUBLE,"
@@ -120,6 +123,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             + CITY_TEMP + " DOUBLE,"
             + WEATHER_ID + " INTEGER,"
             + MIN_TEMP + " DOUBLE,"
+            + TIMEZONE + " TEXT,"
             + MAX_TEMP + " DOUBLE,"
             + HUMIDITY + " DOUBLE,"
             + PRESSURE + " DOUBLE,"
@@ -199,6 +203,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         Log.e(LOG_TAG,"Inserting Pressure"+city.getCityPressure());
         values.put(PRESSURE, city.getCityPressure());
 
+        values.put(TIMEZONE,city.getTimeZone());
 
         Log.e(LOG_TAG,"Inserting temp MAX"+city.getCityMaxTemp());
         Log.e(LOG_TAG,"Inserting temp MIN"+city.getCityMinTemp());
@@ -240,6 +245,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 values.put(TEMP_HOUR,city.getTempHour());
                 values.put(MIN_TEMP, city.getCityMinTemp());
                 values.put(MAX_TEMP, city.getCityMaxTemp());
+                values.put(TIMEZONE,city.getTimeZone());
                 city_row_id= db.insert(TABLE_TODAY_WEATHER, null, values);
             }
             db.setTransactionSuccessful();
@@ -276,6 +282,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 values.put(TEMP_MONTH_DAY,city.getTempMonthDay());
                 values.put(MIN_TEMP, city.getCityMinTemp());
                 values.put(MAX_TEMP, city.getCityMaxTemp());
+                values.put(TIMEZONE,city.getTimeZone());
                 city_row_id= db.insert(TABLE_FORECAST_WEATHER, null, values);
             }
             db.setTransactionSuccessful();
@@ -376,6 +383,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 city.setWeatherMain(c.getString(c.getColumnIndex(WEATHER_MAIN)));
                 city.setWeatherId(c.getDouble(c.getColumnIndex(WEATHER_ID)));
                 city.setWeatherDescription(c.getString(c.getColumnIndex(WEATHER_DESCRIPTION)));
+                city.setTimeZone(c.getString(c.getColumnIndex(TIMEZONE)));
                 city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
@@ -420,6 +428,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
                 city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
+                city.setTimeZone(c.getString(c.getColumnIndex(TIMEZONE)));
 
                 // adding to todo list
                 allCities.add(city);
@@ -455,7 +464,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 city.setCityTemp(c.getDouble(c.getColumnIndex(CITY_TEMP)));
                 city.setCityMinTemp(c.getDouble(c.getColumnIndex(MIN_TEMP)));
                 city.setCityMaxTemp(c.getDouble(c.getColumnIndex(MAX_TEMP)));
-
+                city.setTimeZone(c.getString(c.getColumnIndex(TIMEZONE)));
                 city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
                 city.setTempDay(c.getString(c.getColumnIndex(TEMP_DAY)));
                 city.setTempMonthDay(c.getString(c.getColumnIndex(TEMP_MONTH_DAY)));
