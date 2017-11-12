@@ -96,8 +96,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private WeatherService mWeatherService;
 
     private TextView editPencil;
+    private TextView deleteButton;
+    private TextView cancelPencil;
     private TextView unitCelsius;
-    private TextView unitFharenheit;
     private Switch unitCswitch;
     private Switch unitFswitch;
     SharedPreferences sp;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     WeatherAppDbHelper db;
     private ProgressDialog progressDialog;
     private ProgressDialog progressDialog1;
-
+    Typeface fontawesome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,14 +116,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         editPencil = (TextView) drawerLayout.findViewById(R.id.editPencil);
+        cancelPencil = (TextView) drawerLayout.findViewById(R.id.cancelPencil);
         unitCelsius = (TextView) drawerLayout.findViewById(R.id.tempUnitCelsius);
-        unitFharenheit = (TextView) drawerLayout.findViewById(R.id.tempUnitFarhenheit);
+        deleteButton = (TextView) drawerLayout.findViewById(R.id.deleteButton);
 
-        Typeface fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+         fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
+
         editPencil.setTypeface(fontawesome);
+        cancelPencil.setTypeface(fontawesome);
         unitCelsius.setTypeface(weatherFont);
-        unitFharenheit.setTypeface(weatherFont);
 
 
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.toggle_open, R.string.toggle_close);
@@ -145,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         db = new WeatherAppDbHelper(getApplicationContext());
-
 
 
 
@@ -195,7 +197,60 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
 
 
+
+
+
+        editPencil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean("isEdit", true);
+                editor.commit();
+                for (int i=0;i<recyclerView.getAdapter().getItemCount();i++){
+
+                    RecyclerView.ViewHolder x = recyclerView.findViewHolderForAdapterPosition(i);
+
+                    if(x!=null){
+                        Log.e(LOG_TAG," value "+x.itemView);
+                         x.itemView.findViewById(R.id.deleteButton).setVisibility(View.VISIBLE);
+                    }
+
+                }
+                 editPencil.setVisibility(View.GONE);
+                cancelPencil.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+
+
+        cancelPencil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean("isEdit", false);
+                editor.commit();
+                for (int i=0;i<recyclerView.getAdapter().getItemCount();i++){
+
+                    RecyclerView.ViewHolder x = recyclerView.findViewHolderForAdapterPosition(i);
+
+                    if(x!=null){
+                        Log.e(LOG_TAG," value "+x.itemView);
+                        x.itemView.findViewById(R.id.deleteButton).setVisibility(View.GONE);
+                    }
+
+                }
+                cancelPencil.setVisibility(View.GONE);
+                editPencil.setVisibility(View.VISIBLE);
+
+            }
+        });
+
     }
+
+
 
 
     @Override
@@ -236,28 +291,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if(requestCode==2)
-        {
+        if (requestCode == 2) {
             //Intent i = new Intent();
 
             String cityName = PreferenceManager.getDefaultSharedPreferences(this).getString("cityName", "");
 
 
-            Double lat=(double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLatitude", 0);
-            Double lng=(double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLongitude", 0);
+            Double lat = (double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLatitude", 0);
+            Double lng = (double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLongitude", 0);
 
 
-            Log.e(LOG_TAG,"Longitude in intent is "+lng);
-            Log.e(LOG_TAG,"latitude in intent is "+lat);
+            Log.e(LOG_TAG, "Longitude in intent is " + lng);
+            Log.e(LOG_TAG, "latitude in intent is " + lat);
 
-            if(lat >0 ){
+            if (lat > 0) {
 
                 progressDialog1 = new ProgressDialog(this);
-                progressDialog1.setMessage("Fetching weather data for city "+ cityName);
+                progressDialog1.setMessage("Fetching weather data for city " + cityName);
                 progressDialog1.setCancelable(false);
                 progressDialog1.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -270,14 +323,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     }
                 });
                 progressDialog1.show();
-                
-                DataProcessor dp = new DataProcessor(lat,lng,this,this,progressDialog1,viewPagerHandler);
+
+                DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler);
                 dp.processTimeZoneData(false);
 
             }
         }
     }
-
 
 
     private boolean isNetworkAvailable() {
@@ -373,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        DataProcessor dp = new DataProcessor(lat,lng,this,this,progressDialog,viewPagerHandler);
+        DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler);
         dp.processTimeZoneData(true);
 
 //

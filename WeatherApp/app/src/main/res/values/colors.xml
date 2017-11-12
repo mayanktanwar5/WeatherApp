@@ -10,6 +10,9 @@
     <color name="colorGrey">#DCDCDC</color>
     <color name="colorMinTemp">#9fea8a</color>
     <color name="colorOrange">#FFA500</color>
+    <color name="colorMaroon">#800000</color>
+    <color name="colorDarkRed">#8B0000</color>
+    <color name="colorFireBrick">#B22222</color>
 
     <color name="colorViolet">#4d4e8c</color>
 </resources>

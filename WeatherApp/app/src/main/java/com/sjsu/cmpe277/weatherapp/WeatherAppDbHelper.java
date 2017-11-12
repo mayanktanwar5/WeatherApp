@@ -496,12 +496,25 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     /*
  * Deleting a City
  */
-    public void deleteToDo(long googleCityId) {
+    public void deleteCity(String cityName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_WEATHER, GOOGLE_CITY_ID + " = ?",
-                new String[]{String.valueOf(googleCityId)});
+        db.delete(TABLE_WEATHER, CITY_NAME + " = ?",
+                new String[]{String.valueOf(cityName)});
     }
 
+
+
+    public void deleteTodayWeather(String cityName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TODAY_WEATHER, CITY_NAME + " = ?",
+                new String[]{String.valueOf(cityName)});
+    }
+
+    public void deleteTodayForecastWeather(String cityName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_FORECAST_WEATHER, CITY_NAME + " = ?",
+                new String[]{String.valueOf(cityName)});
+    }
 
     // closing database
     public void closeDB() {

@@ -33,4 +33,6 @@
     <string name="edit_pencil" translatable="false" >&#xf040;</string>
     <string name="arrow_up_long" translatable="false" >&#xf176;</string>
     <string name="arrow_down_long" translatable="false" >&#xf175;</string>
+    <string name="trash_can" translatable="false" >&#xf014;</string>
+    <string name="close_pencil" translatable="false" >&#xf00d;</string>
 </resources>
