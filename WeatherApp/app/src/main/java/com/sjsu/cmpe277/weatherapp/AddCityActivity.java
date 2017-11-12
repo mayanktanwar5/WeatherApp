@@ -1,8 +1,11 @@
 package com.sjsu.cmpe277.weatherapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,10 +44,8 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private AutoCompleteTextView mAutocompleteTextView;
     private GoogleApiClient mGoogleApiClient;
-    private ImageView mCityImage;
     private CityAdapter mCityAdapter;
-    private City city;
-
+SharedPreferences sp;
 
     // Database Helper
     WeatherAppDbHelper db;
@@ -55,6 +56,9 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(AddCityActivity.this)
                 .addApi(Places.GEO_DATA_API)
@@ -65,11 +69,11 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
                 .autoCompleteTextView);
         mAutocompleteTextView.setThreshold(3);
         mAutocompleteTextView.setOnItemClickListener(mAutocompleteClickListener);
-        mCityImage = (ImageView) findViewById(R.id.cityImage);
 
         mCityAdapter = new CityAdapter(this,android.R.layout.simple_list_item_1);
 
         mAutocompleteTextView.setAdapter(mCityAdapter);
+
 
     }
 
@@ -80,8 +84,6 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
             final CityAdapter.City item = mCityAdapter.getItem(position);
             final String placeId = String.valueOf(item.cityId);
 
-            city = new City(placeId);
-
             Log.i(LOG_TAG, "Selected: " + item.description);
 
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
@@ -89,8 +91,8 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
 
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            PendingResult<PlacePhotoMetadataResult> placePhotos= Places.GeoDataApi.getPlacePhotos(mGoogleApiClient,placeId);
-            placePhotos.setResultCallback(mUpdatePlacePhotoDetailsCallback);
+//            PendingResult<PlacePhotoMetadataResult> placePhotos= Places.GeoDataApi.getPlacePhotos(mGoogleApiClient,placeId);
+//            placePhotos.setResultCallback(mUpdatePlacePhotoDetailsCallback);
 
             Log.i(LOG_TAG, "Fetching details for ID: " + item.cityId);
 
@@ -112,12 +114,24 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
             // Selecting the first object buffer.
             final Place place = places.get(0);
             CharSequence attributions = places.getAttributions();
-            Log.e(LOG_TAG,place.getName().toString());
-            Log.e(LOG_TAG,place.getAddress().toString());
-            city.setCityName((String)place.getName());
-            city.setCityCountry((String)place.getAddress());
-            city.setCityLatitude(place.getLatLng().latitude);
-            city.setCityLongitude(place.getLatLng().longitude);
+            Log.e(LOG_TAG,"cityName==>"+place.getName().toString());
+            Log.e(LOG_TAG,"latlng "+place.getLatLng().toString());
+
+
+
+            SharedPreferences.Editor editor = sp.edit();
+
+            editor.putString("cityName", place.getName().toString());
+            editor.putFloat("cityLongitude", (float) place.getLatLng().longitude);
+            editor.putFloat("cityLatitude",(float) place.getLatLng().latitude);
+            editor.commit();
+
+            Intent intent=new Intent();
+            intent.putExtra("Lat",place.getLatLng().latitude);
+            intent.putExtra ("Long",place.getLatLng().longitude);
+            intent.putExtra("cityName",place.getName().toString());
+            setResult(2,intent);
+            finish();//finishing activity
 
 
             places.release();
@@ -125,51 +139,51 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
     };
 
 
-
-    private ResultCallback<PlacePhotoResult> mPhotoResults = new ResultCallback<PlacePhotoResult>() {
-        @Override
-        public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
-            Bitmap result = placePhotoResult.getBitmap();
-            mCityImage.setImageBitmap(result);
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            result.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-            city.setCityImage(byteArray);
-
-
-            db = new WeatherAppDbHelper(getApplicationContext());
-
-            long city_id = db.createCity(city);
-            Log.e(LOG_TAG,"Inserted city return row id is "+city_id);
-
-          // ViewPagerHandler mViewPagerHandler= (ViewPagerHandler) getIntent().getSerializableExtra("ViewPagerHandler");
-
-           //mViewPagerHandler.addView(mViewPagerHandler.createCityView(city));
-
-            finish();
-        }
-    };
-    private ResultCallback<PlacePhotoMetadataResult> mUpdatePlacePhotoDetailsCallback = new ResultCallback<PlacePhotoMetadataResult>() {
-        @Override
-        public void onResult(@NonNull PlacePhotoMetadataResult photos) {
-            if (!photos.getStatus().isSuccess()) {
-                Log.e(LOG_TAG, "Place query did not complete. Error: " +
-                        photos.getStatus().toString());
-                return;
-            }
-            // Selecting the first object buffer.
-            PlacePhotoMetadataBuffer place = photos.getPhotoMetadata();
-            PlacePhotoMetadata placePhoto = place.get(0);
-            CharSequence attributions = placePhoto.getAttributions();
-            PendingResult<PlacePhotoResult> photoResult =placePhoto.getPhoto(mGoogleApiClient) ;
-            photoResult.setResultCallback(mPhotoResults);
-            place.release();
-
-        }
-    };
-
+//
+//    private ResultCallback<PlacePhotoResult> mPhotoResults = new ResultCallback<PlacePhotoResult>() {
+//        @Override
+//        public void onResult(@NonNull PlacePhotoResult placePhotoResult) {
+//            Bitmap result = placePhotoResult.getBitmap();
+//            mCityImage.setImageBitmap(result);
+//
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//            byte[] byteArray = stream.toByteArray();
+//
+//            city.setCityImage(byteArray);
+//
+//
+//            db = new WeatherAppDbHelper(getApplicationContext());
+//
+//            long city_id = db.createCity(city);
+//            Log.e(LOG_TAG,"Inserted city return row id is "+city_id);
+//
+//          // ViewPagerHandler mViewPagerHandler= (ViewPagerHandler) getIntent().getSerializableExtra("ViewPagerHandler");
+//
+//           //mViewPagerHandler.addView(mViewPagerHandler.createCityView(city));
+//
+//            finish();
+//        }
+//    };
+//    private ResultCallback<PlacePhotoMetadataResult> mUpdatePlacePhotoDetailsCallback = new ResultCallback<PlacePhotoMetadataResult>() {
+//        @Override
+//        public void onResult(@NonNull PlacePhotoMetadataResult photos) {
+//            if (!photos.getStatus().isSuccess()) {
+//                Log.e(LOG_TAG, "Place query did not complete. Error: " +
+//                        photos.getStatus().toString());
+//                return;
+//            }
+//            // Selecting the first object buffer.
+//            PlacePhotoMetadataBuffer place = photos.getPhotoMetadata();
+//            PlacePhotoMetadata placePhoto = place.get(0);
+//            CharSequence attributions = placePhoto.getAttributions();
+//            PendingResult<PlacePhotoResult> photoResult =placePhoto.getPhoto(mGoogleApiClient) ;
+//            photoResult.setResultCallback(mPhotoResults);
+//            place.release();
+//
+//        }
+//    };
+//
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

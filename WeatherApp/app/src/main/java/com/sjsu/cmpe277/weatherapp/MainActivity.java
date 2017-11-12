@@ -59,6 +59,7 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
+import com.sjsu.cmpe277.weatherapp.weatherApi.DataProcessor;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherService;
 import com.sjsu.cmpe277.weatherapp.weatherApi.WeatherServiceImpl;
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     // Database Helper
     WeatherAppDbHelper db;
     private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         mToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         String currentCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
 
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         if (id == R.id.action_add_city) {
             Intent i = new Intent(this, AddCityActivity.class);
-            startActivity(i);
+            startActivityForResult(i, 2);
         }
 
         if (id == R.id.action_add_current_city) {
@@ -232,6 +233,51 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==2)
+        {
+            //Intent i = new Intent();
+
+            String cityName = PreferenceManager.getDefaultSharedPreferences(this).getString("cityName", "");
+
+
+            Double lat=(double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLatitude", 0);
+            Double lng=(double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLongitude", 0);
+
+
+            Log.e(LOG_TAG,"Longitude in intent is "+lng);
+            Log.e(LOG_TAG,"latitude in intent is "+lat);
+
+            if(lat >0 ){
+
+                progressDialog1 = new ProgressDialog(this);
+                progressDialog1.setMessage("Fetching weather data for city "+ cityName);
+                progressDialog1.setCancelable(false);
+                progressDialog1.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        try {
+//                            Toast.makeText(getApplicationContext(),"Request Canceled");
+                        } catch (SecurityException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                progressDialog1.show();
+                
+                DataProcessor dp = new DataProcessor(lat,lng,this,this,progressDialog1,viewPagerHandler);
+                dp.processTimeZoneData(false);
+
+            }
+        }
+    }
+
 
 
     private boolean isNetworkAvailable() {
@@ -322,142 +368,145 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        progressDialog.setMessage("Fetching City Name");
+        progressDialog.setMessage("Fetching City Weather Data");
 
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
+        DataProcessor dp = new DataProcessor(lat,lng,this,this,progressDialog,viewPagerHandler);
+        dp.processTimeZoneData(true);
 
-        try {
-
-            Log.e(LOG_TAG, "CALLING current city");
-            String s = new CurrentCity(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng)).get();
-
-            Long tsLong = System.currentTimeMillis() / 1000;
-            String timeStamp = tsLong.toString();
-            String timezone = new CityTimezone(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng), timeStamp).get();
-            String cityNameRes = "";
-            String cityCountryRes = "";
-
-            Log.e(LOG_TAG, "CALLING current city ka result is " + s);
-            try {
-
-                // City name JSON Parser
-
-                JSONObject jsonObject = new JSONObject(s);
-
-                JSONArray results = (JSONArray) jsonObject.get("results");
-
-                JSONArray address_components = (JSONArray) results.getJSONObject(0).getJSONArray("address_components");
-
-                for (int i = 0; i < address_components.length(); i++) {
-
-                    JSONObject item = address_components.getJSONObject(i);
-
-                    JSONArray types = item.getJSONArray("types");
-
-                    if (types.getString(0).equals("locality")) {
-                        cityNameRes = item.getString("long_name");
-
-                    }
-
-                    if (types.getString(0).equals("country")) {
-                        cityCountryRes = item.getString("long_name");
-                    }
-                }
-
-                // Timezone JSON Parser
-
-                JSONObject timezoneJsonObject = new JSONObject(timezone);
-                String timzoneId = timezoneJsonObject.getString("timeZoneId");
-
-
-                Log.e(LOG_TAG, "CALLING current city name is  " + cityNameRes + "currentCIty country " + cityCountryRes);
-                if (!cityNameRes.equals("") && !cityCountryRes.equals("") && !timzoneId.equals("")) {
-
-                    Log.e(LOG_TAG, "ENtered all matched   " + cityNameRes + "currentCIty country " + cityCountryRes);
-                    progressDialog.dismiss();
-                    String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
-
-                    SharedPreferences.Editor editor = sp.edit();
-
-                    editor.putString("currentCity", cityNameRes);
-                    editor.putBoolean("isCityChanged", !cityNameRes.equals(lastCity));
-                    editor.commit();
-
-                    // check if city exist in DB
-
-                    db = new WeatherAppDbHelper(getApplicationContext());
-                    boolean x = db.getCityByName(cityNameRes);
-                    Log.e(LOG_TAG, "get city by name  and city name is " + cityNameRes + " found it ==>" + x);
-                    if (!x) {
-
-                        mWeatherService = new WeatherServiceImpl();
-                        try {
-
-                            City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes);
-
-                            Log.e(LOG_TAG, "city OBJECT  MIn temp" + city.getCityMinTemp());
-                            Log.e(LOG_TAG, "city OBJECT  MAx temp" + city.getCityMaxTemp());
-                            long returnRowID = db.createCity(city);
-
-                            Log.e(LOG_TAG, "added the city in DB" + returnRowID);
-
-
-                            List<City> oneDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "one");
-
-                            long returnOneDayRowId = db.createTodayWeather(oneDayForcast);
-
-                            Log.e(LOG_TAG, "added the one day forecast in DB" + returnOneDayRowId);
-
-                            List<City> fiveDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "five");
-
-                            long returnFiveDayRowId = db.createForecastWeather(fiveDayForcast);
-
-                            Log.e(LOG_TAG, "added the five day forecast in DB" + returnFiveDayRowId);
-
-                            editor = sp.edit();
-                            mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            editor.putString("lastRefreshed", mSimpleDateFormat.format(new Date()));
-                            editor.commit();
-
-                            String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(this).getString("lastRefreshed", "");
-
-                            Log.e(LOG_TAG, lastRefreshed);
-
-                            viewPagerHandler.addCityView(city, viewPagerHandler.getViewCount());
-                            viewPagerHandler.notifyDataChanged();
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-
-                        Toast.makeText(this, "City " + cityNameRes + " is already in View",
-                                Toast.LENGTH_LONG).show();
-
-
-                    }
-
-                } else {
-                    progressDialog.dismiss();
-
-                    Toast.makeText(this, "Unexpected error please try later",
-                            Toast.LENGTH_LONG).show();
-
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
+//
+//        try {
+//
+//            Log.e(LOG_TAG, "CALLING current city");
+//            String s = new CurrentCity(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng)).get();
+//
+//            Long tsLong = System.currentTimeMillis() / 1000;
+//            String timeStamp = tsLong.toString();
+//            String timezone = new CityTimezone(progressDialog, this, this).execute(Double.toString(lat), Double.toString(lng), timeStamp).get();
+//            String cityNameRes = "";
+//            String cityCountryRes = "";
+//
+//            Log.e(LOG_TAG, "CALLING current city ka result is " + s);
+//            try {
+//
+//                // City name JSON Parser
+//
+//                JSONObject jsonObject = new JSONObject(s);
+//
+//                JSONArray results = (JSONArray) jsonObject.get("results");
+//
+//                JSONArray address_components = (JSONArray) results.getJSONObject(0).getJSONArray("address_components");
+//
+//                for (int i = 0; i < address_components.length(); i++) {
+//
+//                    JSONObject item = address_components.getJSONObject(i);
+//
+//                    JSONArray types = item.getJSONArray("types");
+//
+//                    if (types.getString(0).equals("locality")) {
+//                        cityNameRes = item.getString("long_name");
+//
+//                    }
+//
+//                    if (types.getString(0).equals("country")) {
+//                        cityCountryRes = item.getString("long_name");
+//                    }
+//                }
+//
+//                // Timezone JSON Parser
+//
+//                JSONObject timezoneJsonObject = new JSONObject(timezone);
+//                String timzoneId = timezoneJsonObject.getString("timeZoneId");
+//
+//
+//                Log.e(LOG_TAG, "CALLING current city name is  " + cityNameRes + "currentCIty country " + cityCountryRes);
+//                if (!cityNameRes.equals("") && !cityCountryRes.equals("") && !timzoneId.equals("")) {
+//
+//                    Log.e(LOG_TAG, "ENtered all matched   " + cityNameRes + "currentCIty country " + cityCountryRes);
+//                    progressDialog.dismiss();
+//                    String lastCity = PreferenceManager.getDefaultSharedPreferences(this).getString("currentCity", "");
+//
+//                    SharedPreferences.Editor editor = sp.edit();
+//
+//                    editor.putString("currentCity", cityNameRes);
+//                    editor.putBoolean("isCityChanged", !cityNameRes.equals(lastCity));
+//                    editor.commit();
+//
+//                    // check if city exist in DB
+//
+//                    db = new WeatherAppDbHelper(getApplicationContext());
+//                    boolean x = db.getCityByName(cityNameRes);
+//                    Log.e(LOG_TAG, "get city by name  and city name is " + cityNameRes + " found it ==>" + x);
+//                    if (!x) {
+//
+//                        mWeatherService = new WeatherServiceImpl();
+//                        try {
+//
+//                            City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes);
+//
+//                            Log.e(LOG_TAG, "city OBJECT  MIn temp" + city.getCityMinTemp());
+//                            Log.e(LOG_TAG, "city OBJECT  MAx temp" + city.getCityMaxTemp());
+//                            long returnRowID = db.createCity(city);
+//
+//                            Log.e(LOG_TAG, "added the city in DB" + returnRowID);
+//
+//
+//                            List<City> oneDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "one");
+//
+//                            long returnOneDayRowId = db.createTodayWeather(oneDayForcast);
+//
+//                            Log.e(LOG_TAG, "added the one day forecast in DB" + returnOneDayRowId);
+//
+//                            List<City> fiveDayForcast = mWeatherService.getForecast(cityNameRes, cityCountryRes, timzoneId, "five");
+//
+//                            long returnFiveDayRowId = db.createForecastWeather(fiveDayForcast);
+//
+//                            Log.e(LOG_TAG, "added the five day forecast in DB" + returnFiveDayRowId);
+//
+//                            editor = sp.edit();
+//                            mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                            editor.putString("lastRefreshed", mSimpleDateFormat.format(new Date()));
+//                            editor.commit();
+//
+//                            String lastRefreshed = PreferenceManager.getDefaultSharedPreferences(this).getString("lastRefreshed", "");
+//
+//                            Log.e(LOG_TAG, lastRefreshed);
+//
+//                            viewPagerHandler.addCityView(city, viewPagerHandler.getViewCount());
+//                            viewPagerHandler.notifyDataChanged();
+//
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//
+//                        Toast.makeText(this, "City " + cityNameRes + " is already in View",
+//                                Toast.LENGTH_LONG).show();
+//
+//
+//                    }
+//
+//                } else {
+//                    progressDialog.dismiss();
+//
+//                    Toast.makeText(this, "Unexpected error please try later",
+//                            Toast.LENGTH_LONG).show();
+//
+//                }
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//
 
     }
 

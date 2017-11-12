@@ -1,5 +1,6 @@
 package com.sjsu.cmpe277.weatherapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -25,9 +26,9 @@ public class CityTimezone extends AsyncTask<String, ProgressDialog, String> {
 
     ProgressDialog progressDialog;
     Context context;
-    MainActivity activity;
+    Activity activity;
 
-    public CityTimezone(ProgressDialog progressDialog, Context context, MainActivity activity) {
+    public CityTimezone(ProgressDialog progressDialog, Context context, Activity activity) {
         this.progressDialog = progressDialog;
         this.context = context;
         this.activity = activity;

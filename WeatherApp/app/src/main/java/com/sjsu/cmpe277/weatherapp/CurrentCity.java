@@ -1,5 +1,6 @@
 package com.sjsu.cmpe277.weatherapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -25,9 +26,9 @@ public class CurrentCity extends AsyncTask<String, ProgressDialog, String> {
 
     ProgressDialog progressDialog;
     Context context;
-    MainActivity activity;
+    Activity activity;
 
-    public CurrentCity(ProgressDialog progressDialog, Context context, MainActivity activity) {
+    public CurrentCity(ProgressDialog progressDialog, Context context, Activity activity) {
         this.progressDialog = progressDialog;
         this.context = context;
         this.activity = activity;
@@ -50,7 +51,7 @@ public class CurrentCity extends AsyncTask<String, ProgressDialog, String> {
             String lat = params[0];
             String lng = params[1];
             try {
-                response = getLatLongByURL("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&result_type=locality&key=AIzaSyADzh8-Aceet-UVblUgau5y0jE7GbtN6eQ");
+                response = getLatLongByURL("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&key=AIzaSyADzh8-Aceet-UVblUgau5y0jE7GbtN6eQ");
                 Log.d("response",""+response);
                 Log.e("CURRENT_CITY","RESPONSE AFTER GETTING CITY DETAILS"+response);
                 return response;
