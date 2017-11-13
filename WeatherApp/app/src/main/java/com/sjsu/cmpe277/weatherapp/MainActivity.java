@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -154,8 +155,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     cancelPencil.setVisibility(View.GONE);
                     editPencil.setVisibility(View.VISIBLE);
                 }
-
-            //}
 
         };
 

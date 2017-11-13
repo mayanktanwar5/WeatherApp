@@ -6,7 +6,7 @@
     <string name="action_edit_city">Edit City</string>
     <string name="toggle_open">Open</string>
     <string name="toggle_close">Close</string>
-    <string name="current_city">Your current city</string>
+    <string name="current_city">You are here</string>
 
     <string name="location_settings">Location Settings</string>
     <string name="location_settings_message">Location is not enabled. Do you wish to go to the settings menu?</string>
