@@ -47,6 +47,26 @@ public class WeatherServiceImpl implements WeatherService {
 
     OpenWeatherMap owm = new OpenWeatherMap(units, "647f4536db207983f6f2345572c9492f");
 
+    public City[] getMinMaxFiveDays(String city){
+        City [] cities=new City[5];
+        try {
+            JSONObject weatherInfo = weatherInfo("http://api.openweathermap.org/data/2.5/forecast?q=" + getSuitableLocation(city) + "&cnt=5&app_id=647f4536db207983f6f2345572c9492f", true);
+            JSONArray list=weatherInfo.getJSONArray("list");
+
+            for(int i=0;i<5;i++){
+                JSONObject record=list.getJSONObject(i);
+                JSONObject tempObj=record.getJSONObject("temp");
+                cities[i]=new City(city);
+                cities[i].setCityMaxTemp(tempObj.getDouble("max"));
+                cities[i].setCityMinTemp(tempObj.getDouble("min"));
+            }
+            
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        return cities;
+    }
     @Override
     public City getCurrentWeather(String city, String country,String timezone) throws JSONException {
         DailyWeather dailyWeather = null;
@@ -116,7 +136,7 @@ public class WeatherServiceImpl implements WeatherService {
                         JSONObject jsonObject = forecastArray.getJSONObject(i);
                         String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
 
-                        if (Integer.parseInt(res[4]) > 11 && Integer.parseInt(res[4]) < 16) {
+                        if (Integer.parseInt(res[4]) > 12 && Integer.parseInt(res[4]) < 16) {
 
 
 
@@ -317,6 +337,9 @@ public class WeatherServiceImpl implements WeatherService {
         return city;
     }
 
+
+
+
     private City forecastWeatherJsonParser(JSONObject jsonObject, String cityName, int cityId) throws JSONException {
 
         JSONObject mainObj = new JSONObject(jsonObject.getString("main"));
@@ -339,6 +362,9 @@ public class WeatherServiceImpl implements WeatherService {
 
         return city;
     }
+
+
+
 
 
 
