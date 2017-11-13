@@ -14,6 +14,9 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="getting_location">Getting your location ...</string>
+    <string name="startup_selection">Select an option below</string>
+    <string name="add_city">Add City</string>
+    <string name="detect_location">Detect Location</string>
 
 
     <string name="weather_sunny" translatable="false">&#xf00d;</string>

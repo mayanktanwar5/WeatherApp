@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private TextView editPencil;
     private TextView cancelPencil;
     private TextView unitCelsius;
+    private TextView unitF;
     private Switch unitCswitch;
     SharedPreferences sp;
     SimpleDateFormat mSimpleDateFormat;
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         editPencil = (TextView) drawerLayout.findViewById(R.id.editPencil);
         cancelPencil = (TextView) drawerLayout.findViewById(R.id.cancelPencil);
         unitCelsius = (TextView) drawerLayout.findViewById(R.id.tempUnitCelsius);
+        unitF = (TextView) drawerLayout.findViewById(R.id.tempUnitFarhenheit);
 
         fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
         Typeface weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weather.ttf");
@@ -124,8 +126,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         editPencil.setTypeface(fontawesome);
         cancelPencil.setTypeface(fontawesome);
         unitCelsius.setTypeface(weatherFont);
+        unitF.setTypeface(weatherFont);
 
-         isEdit = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("isEdit", true);
+
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.toggle_open, R.string.toggle_close) {
 
 
@@ -182,7 +185,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         if (db.getAllCities().size() <= 0) {
 
-            getCityByLocation();
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.startup_selection)
+                    .setTitle("Welcome !!")
+                    .setPositiveButton(R.string.detect_location, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+                            dialog.cancel();
+                            getCityByLocation();
+
+                        }
+                    })
+                    .setNegativeButton(R.string.add_city, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+
+                            Intent i = new Intent(getApplicationContext(), AddCityActivity.class);
+                            startActivityForResult(i, 2);
+                        }
+                    });
+
+
+            builder.create().show();
+
         }
 
 
@@ -197,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         if (!isCelsius) {
             unitCswitch.setChecked(false);
+            unitCelsius.setVisibility(View.GONE);
+            unitF.setVisibility(View.VISIBLE);
         }
 
 
@@ -214,12 +242,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     editor.putBoolean("isCelsius", false);
                     editor.commit();
 
+                    unitCelsius.setVisibility(View.GONE);
+                    unitF.setVisibility(View.VISIBLE);
+
                 } else {
                     viewPagerHandler.convertUnits(false);
                     recyclerView.setAdapter(recyclerViewAdapter);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putBoolean("isCelsius", true);
                     editor.commit();
+
+                    unitCelsius.setVisibility(View.VISIBLE);
+                    unitF.setVisibility(View.GONE);
                 }
 
             }
@@ -323,7 +357,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if (requestCode == 2) {
+
+        if (resultCode == 2) {
             //Intent i = new Intent();
 
             String cityName = PreferenceManager.getDefaultSharedPreferences(this).getString("cityName", "");
