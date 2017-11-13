@@ -214,7 +214,6 @@ public class ViewPagerHandler implements Serializable {
         TextView maxTempIcon = (TextView) v0.findViewById(R.id.maxTempIcon);
         TextView maxTempValue = (TextView) v0.findViewById(R.id.maxTempValue);
         TextClock cityViewTime = (TextClock) v0.findViewById(R.id.cityViewTime);
-        TextView cityViewDayMonth = (TextView) v0.findViewById(R.id.cityViewDayMonth);
 
         RecyclerView todayWeather = (RecyclerView) v0.findViewById(R.id.todayForecastRecycler);
         RecyclerView forecastWeather = (RecyclerView) v0.findViewById(R.id.futureForecastRecycler);
