@@ -53,8 +53,6 @@ public class WeatherServiceImpl implements WeatherService {
         DailyWeather dailyWeather = null;
         JSONObject weatherInfo = weatherInfo("http://api.openweathermap.org/data/2.5/weather?q=" + getSuitableLocation(city) + "," + getSuitableLocation(country) + "&units=metric" + "&appid=647f4536db207983f6f2345572c9492f", true);
 
-//        String[] res = TimezoneConverter(weatherInfo.getString("dt"), timezone);
-
         City cityObj = currentWeatherJsonParser(weatherInfo);
 
 //        cityObj.setTempMonthDay(res[2]);
@@ -125,14 +123,36 @@ public class WeatherServiceImpl implements WeatherService {
 
 
                     Log.e("WeatherSercice","getting the forecast equals ===> five");
+                    City last=null;
+                    Double min= Double.MAX_VALUE;
+                    Double max=Double.MIN_VALUE;
+                    String day="";
 
                     for (int i = 0; i < forecastArray.length(); i++) {
                         JSONObject jsonObject = forecastArray.getJSONObject(i);
                         String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
+                        City temporary =  forecastWeatherJsonParser(jsonObject,cityName,cityId);
+                        System.out.println(res[0]+":"+res[1]+":"+res[2]+":"+res[3]+":"+res[4]+" temp: "+temporary.getCityTemp());
+                        if(!day.equalsIgnoreCase(res[0])){
 
+                            if(last!=null) {
+                                last.setCityMinTemp(min);
+                                last.setCityMaxTemp(max);
+                            }
+                            last=null;
+                            min=Double.MAX_VALUE;
+                            max=Double.MIN_VALUE;
+                            day=res[0];
+                        }
+
+                        if(temporary.getCityTemp()>max)
+                            max=temporary.getCityTemp();
+                        if(temporary.getCityTemp()<min)
+                            min=temporary.getCityTemp();
 
                         if (Integer.parseInt(res[4]) > 12 && Integer.parseInt(res[4]) < 16) {
 
+//                            City temp =  getCurrentWeather(city,country,timeZone);
 
                             Log.e("WeatherSercice","met the condition running for ===> "+j);
                             cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
@@ -141,17 +161,22 @@ public class WeatherServiceImpl implements WeatherService {
                             cityRes.setTempDay(res[0]);
                             cityRes.setTimeZone(timeZone);
                             cityRes.setTempMonthDay(res[2]);
-
-                            Log.e("CURRENT J","current value of j is "+j);
-
-                           // cityRes.setCityMaxTemp(ci.getCityMaxTemp());
-                            //cityRes.setCityMinTemp(minMax[j].getCityMinTemp());
+//                            cityRes.setCityMaxTemp(temp.getCityMaxTemp());
+//                            cityRes.setCityMinTemp(temp.getCityMinTemp());
 
                             weathers.add(cityRes);
                             j++;
+                            last=cityRes;
                         }
 
                     }
+
+                    if(last!=null){
+                        last.setCityMinTemp(min);
+                        last.setCityMaxTemp(max);
+                    }
+
+
                 }
 
         } catch (JSONException e) {
@@ -342,6 +367,9 @@ public class WeatherServiceImpl implements WeatherService {
         return city;
     }
 
+
+
+
     private City forecastWeatherJsonParser(JSONObject jsonObject, String cityName, int cityId) throws JSONException {
 
         JSONObject mainObj = new JSONObject(jsonObject.getString("main"));
@@ -364,6 +392,9 @@ public class WeatherServiceImpl implements WeatherService {
 
         return city;
     }
+
+
+
 
 
 
