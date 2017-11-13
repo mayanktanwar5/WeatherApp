@@ -23,7 +23,7 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
     private static final String LOG_TAG = "WeatherAppDbHelper";
     public static final String DATABASE_NAME = "weatherApp.db";
 
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     // Table Names
     private static final String TABLE_WEATHER = "weather";
@@ -84,6 +84,8 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
             + WIND_SPEED + " DOUBLE,"
             + DEGREES + " DOUBLE,"
             + CITY_IMAGE + " BLOB,"
+            + TEMP_DAY + " TEXT,"
+            + TEMP_MONTH_DAY + " TEXT,"
             + ROW_CREATED_AT + " DATETIME,"
             + UPDATE_DATE + "DATETIME"
             + ")";
@@ -209,6 +211,9 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
         Log.e(LOG_TAG,"Inserting temp MIN"+city.getCityMinTemp());
         values.put(MIN_TEMP, city.getCityMinTemp());
         values.put(MAX_TEMP, city.getCityMaxTemp());
+
+        values.put(TEMP_DAY,city.getTempDay());
+        values.put(TEMP_MONTH_DAY,city.getTempMonthDay());
         values.put(ROW_CREATED_AT, dateFormat.format(new Date()));
 
 
@@ -390,8 +395,8 @@ public class WeatherAppDbHelper extends SQLiteOpenHelper {
                 city.setCityPressure(c.getDouble(c.getColumnIndex(PRESSURE)));
                 city.setCityHumididty(c.getDouble(c.getColumnIndex(HUMIDITY)));
 //                city.setTempHour(c.getString(c.getColumnIndex(TEMP_HOUR)));
-//                city.setTempDay(c.getString(c.getColumnIndex(TEMP_DAY)));
-//                city.setTempMonthDay(c.getString(c.getColumnIndex(TEMP_MONTH_DAY)));
+                city.setTempDay(c.getString(c.getColumnIndex(TEMP_DAY)));
+                city.setTempMonthDay(c.getString(c.getColumnIndex(TEMP_MONTH_DAY)));
 
                 // adding to todo list
                 allCities.add(city);

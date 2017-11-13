@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Mak on 11/3/17.
@@ -213,12 +214,15 @@ public class ViewPagerHandler implements Serializable {
         TextView maxTempIcon = (TextView) v0.findViewById(R.id.maxTempIcon);
         TextView maxTempValue = (TextView) v0.findViewById(R.id.maxTempValue);
         TextClock cityViewTime = (TextClock) v0.findViewById(R.id.cityViewTime);
+        TextView cityViewDayMonth = (TextView) v0.findViewById(R.id.cityViewDayMonth);
 
         RecyclerView todayWeather = (RecyclerView) v0.findViewById(R.id.todayForecastRecycler);
         RecyclerView forecastWeather = (RecyclerView) v0.findViewById(R.id.futureForecastRecycler);
 
         Log.e("Creating City View", "TEMP====>" + city.getCityTemp());
         Log.e("Creating City View", "DEsC====>" + city.getWeatherDescription());
+
+
 
 
         cityDesc.setText(city.getWeatherDescription());
@@ -236,8 +240,6 @@ public class ViewPagerHandler implements Serializable {
             cityMaxTemp.setText(celsiusToFahrenheit(city.getCityMaxTemp()).intValue() + "°");
             minTempValue.setText(celsiusToFahrenheit(city.getCityMinTemp()).intValue()+"°");
             maxTempValue.setText(celsiusToFahrenheit(city.getCityMaxTemp()).intValue()+"°");
-
-
 
 
         } else{

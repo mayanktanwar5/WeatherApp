@@ -47,12 +47,25 @@ public class WeatherServiceImpl implements WeatherService {
 
     OpenWeatherMap owm = new OpenWeatherMap(units, "647f4536db207983f6f2345572c9492f");
 
+
     @Override
     public City getCurrentWeather(String city, String country,String timezone) throws JSONException {
         DailyWeather dailyWeather = null;
         JSONObject weatherInfo = weatherInfo("http://api.openweathermap.org/data/2.5/weather?q=" + getSuitableLocation(city) + "," + getSuitableLocation(country) + "&units=metric" + "&appid=647f4536db207983f6f2345572c9492f", true);
 
+//        String[] res = TimezoneConverter(weatherInfo.getString("dt"), timezone);
+
         City cityObj = currentWeatherJsonParser(weatherInfo);
+
+//        cityObj.setTempMonthDay(res[2]);
+//        cityObj.setTempDay(res[0]);
+
+        Log.e("CITY_NULL"," Received null getCurrentWeather ");
+
+        if(cityObj==null){
+            return null;
+        }
+
         cityObj.setCityCountry(country);
         Log.e("Setting timezone"," TIMEZONE get is "+timezone);
         cityObj.setTimeZone(timezone);
@@ -112,15 +125,14 @@ public class WeatherServiceImpl implements WeatherService {
 
 
                     Log.e("WeatherSercice","getting the forecast equals ===> five");
+
                     for (int i = 0; i < forecastArray.length(); i++) {
                         JSONObject jsonObject = forecastArray.getJSONObject(i);
                         String[] res = TimezoneConverter(jsonObject.getString("dt"), timeZone);
 
-                        if (Integer.parseInt(res[4]) > 11 && Integer.parseInt(res[4]) < 16) {
 
+                        if (Integer.parseInt(res[4]) > 12 && Integer.parseInt(res[4]) < 16) {
 
-
-                            City temp =  getCurrentWeather(city,country,timeZone);
 
                             Log.e("WeatherSercice","met the condition running for ===> "+j);
                             cityRes = forecastWeatherJsonParser(jsonObject,cityName,cityId);
@@ -129,8 +141,11 @@ public class WeatherServiceImpl implements WeatherService {
                             cityRes.setTempDay(res[0]);
                             cityRes.setTimeZone(timeZone);
                             cityRes.setTempMonthDay(res[2]);
-                            cityRes.setCityMaxTemp(temp.getCityMaxTemp());
-                            cityRes.setCityMinTemp(temp.getCityMinTemp());
+
+                            Log.e("CURRENT J","current value of j is "+j);
+
+                           // cityRes.setCityMaxTemp(ci.getCityMaxTemp());
+                            //cityRes.setCityMinTemp(minMax[j].getCityMinTemp());
 
                             weathers.add(cityRes);
                             j++;
@@ -296,6 +311,16 @@ public class WeatherServiceImpl implements WeatherService {
 
     private City currentWeatherJsonParser(JSONObject jsonObject) throws JSONException {
 
+        Log.e(" JSONOBJ"," RECEIVED JSON OBHJ    ==>"+jsonObject);
+        if(jsonObject.has("message")) {
+            if (jsonObject.length() == 0 || jsonObject.getString("message").equals("city not found") || jsonObject.getString("message").equals("")) {
+
+                Log.e("CITY_NULL", " Passing null currentWeatherJsonParser ");
+
+                return null;
+            }
+
+        }
         JSONObject mainObj = new JSONObject(jsonObject.getString("main"));
         JSONObject weatherObj = jsonObject.getJSONArray("weather").getJSONObject(0);
 

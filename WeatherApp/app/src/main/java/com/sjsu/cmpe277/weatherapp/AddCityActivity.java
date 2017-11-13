@@ -1,6 +1,8 @@
 package com.sjsu.cmpe277.weatherapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -48,6 +50,7 @@ public class AddCityActivity extends AppCompatActivity implements GoogleApiClien
     private AutoCompleteTextView mAutocompleteTextView;
     private GoogleApiClient mGoogleApiClient;
     private CityAdapter mCityAdapter;
+    private ProgressDialog progressDialog;
 SharedPreferences sp;
 
     // Database Helper
@@ -110,6 +113,23 @@ SharedPreferences sp;
 
             Log.i(LOG_TAG, "Selected: " + item.description);
 
+
+//            progressDialog = new ProgressDialog(getApplicationContext());
+//            progressDialog.setMessage("Fetching weather data for city ");
+//            progressDialog.setCancelable(false);
+//            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    try {
+////                            Toast.makeText(getApplicationContext(),"Request Canceled");
+//                    } catch (SecurityException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            progressDialog.show();
+
+
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
 
@@ -143,6 +163,8 @@ SharedPreferences sp;
 
 
 
+
+
             SharedPreferences.Editor editor = sp.edit();
 
             editor.putString("cityName", place.getName().toString());
@@ -154,11 +176,15 @@ SharedPreferences sp;
             intent.putExtra("Lat",place.getLatLng().latitude);
             intent.putExtra ("Long",place.getLatLng().longitude);
             intent.putExtra("cityName",place.getName().toString());
+
+            places.release();
+
+//            progressDialog.dismiss();
             setResult(2,intent);
             finish();//finishing activity
 
 
-            places.release();
+
         }
     };
 

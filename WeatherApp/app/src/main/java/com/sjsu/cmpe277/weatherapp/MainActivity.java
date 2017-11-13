@@ -357,6 +357,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
 
+        Bundle bundle = data.getExtras();
+
         if (resultCode == 2) {
             //Intent i = new Intent();
 
@@ -366,6 +368,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Double lat = (double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLatitude", 0);
             Double lng = (double) PreferenceManager.getDefaultSharedPreferences(this).getFloat("cityLongitude", 0);
 
+
+            Log.e("CITY_NAME","city name from google places api "+cityName);
 
             Log.e(LOG_TAG, "Longitude in intent is " + lng);
             Log.e(LOG_TAG, "latitude in intent is " + lat);
@@ -388,7 +392,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 progressDialog1.show();
 
                 DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog1, viewPagerHandler, recyclerViewAdapter);
-                dp.processTimeZoneData(false);
+       String s   =     dp.processTimeZoneData(false, cityName);
+
+       if(s.equals("City_Not_Found")){
+
+           Toast.makeText(this, "City "+cityName+" not found in open weather api",
+                   Toast.LENGTH_LONG).show();
+       }
+
 
             }
         }
@@ -489,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         double lng = location.getLongitude();
 
         DataProcessor dp = new DataProcessor(lat, lng, this, this, progressDialog, viewPagerHandler, recyclerViewAdapter);
-        dp.processTimeZoneData(true);
+        dp.processTimeZoneData(true,"");
 
 //
 //        try {

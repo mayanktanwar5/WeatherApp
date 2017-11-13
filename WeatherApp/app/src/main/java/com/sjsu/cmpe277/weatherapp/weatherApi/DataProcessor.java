@@ -59,7 +59,7 @@ public class DataProcessor {
         sp = PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 
-    public void processTimeZoneData(boolean locationDetect) {
+    public String processTimeZoneData(boolean locationDetect, String cityName) {
 
 
 
@@ -101,6 +101,45 @@ public class DataProcessor {
                     }
                 }
 
+
+//                if(cityName.equals("") && !locationDetect){
+//
+//
+//                    Log.e("CITY_NAME", "setting city name of google "+cityName);
+//                    cityNameRes = cityName;
+//
+//
+//                } else
+                 if(cityName.equals("") && cityNameRes.equals("")){
+
+                    // take administrative address
+
+
+                    Log.e("CITY_NAME", "take administrative address setting city");
+                    for (int i = 0; i < address_components.length(); i++) {
+
+                        JSONObject item = address_components.getJSONObject(i);
+
+                        JSONArray types = item.getJSONArray("types");
+
+                        if (types.getString(0).equals("administrative_area_level_1")) {
+                            cityNameRes = item.getString("long_name");
+
+                        }
+
+                        if (types.getString(0).equals("country")) {
+                            cityCountryRes = item.getString("long_name");
+                        }
+                    }
+
+
+                }
+
+                if(!cityName.equals("")){
+
+                     cityNameRes=cityName;
+                }
+
                 // Timezone JSON Parser
 
                 JSONObject timezoneJsonObject = new JSONObject(timezone);
@@ -128,8 +167,19 @@ public class DataProcessor {
                     }
 
 
-                    getForecastAndAdd(cityNameRes, cityCountryRes, timzoneId);
-                    progressDialog.dismiss();
+                   String x= getForecastAndAdd(cityNameRes, cityCountryRes, timzoneId);
+                     if( x.equals("success")){
+
+                         progressDialog.dismiss();
+
+                     } else if(x.equals("City_Not_Found")){
+                         progressDialog.dismiss();
+
+
+
+                         return "City_Not_Found";
+                     }
+
 
 
                 } else {
@@ -150,11 +200,11 @@ public class DataProcessor {
             e.printStackTrace();
         }
 
-
+return "success";
     }
 
 
-    public void getForecastAndAdd(String cityNameRes, String cityCountryRes, String timzoneId) {
+    public String getForecastAndAdd(String cityNameRes, String cityCountryRes, String timzoneId) {
 
 
         db = new WeatherAppDbHelper(ctx);
@@ -166,6 +216,13 @@ public class DataProcessor {
             try {
 
                 City city = mWeatherService.getCurrentWeather(cityNameRes, cityCountryRes,timzoneId);
+
+
+                if(city==null){
+
+                    Log .e("City_Not_Found"," returnning");
+                    return "City_Not_Found";
+                }
 
                 Log.e(LOG_TAG, "city OBJECT  MIn temp" + city.getCityMinTemp());
                 Log.e(LOG_TAG, "city OBJECT  MAx temp" + city.getCityMaxTemp());
@@ -202,6 +259,8 @@ public class DataProcessor {
                 recyclerAdapter.cities.add(city);
                 recyclerAdapter.notifyDataSetChanged();
 
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {
@@ -214,6 +273,8 @@ public class DataProcessor {
 
 
         }
+
+        return "success";
     }
 
 }
