@@ -10,8 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f3d17a6-e19c-4f15-a57b-970e450a2020" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/release/app-release.apk" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/ViewPagerHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/ViewPagerHandler.java" />
     </list>
     <ignored path="WeatherApp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -78,11 +78,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WeatherServiceImpl.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="WeatherServiceImpl.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/WeatherServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="60" column="37" lean-forward="false" selection-start-line="59" selection-start-column="9" selection-end-line="60" selection-end-column="37" />
+            <state relative-caret-position="1433">
+              <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -90,7 +90,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ViewPagerHandler.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ViewPagerHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/ViewPagerHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="123">
@@ -2125,8 +2125,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/DataProcessor.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/WeatherAppDbHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/city_view.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/WeatherServiceImpl.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/ViewPagerHandler.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/WeatherServiceImpl.java" />
       </list>
     </option>
   </component>
@@ -2602,7 +2602,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510557940987" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510559206682" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2649,7 +2649,7 @@
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
       </Profilers>
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510557940987" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510559206682" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2831,7 +2831,7 @@
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
       <method>
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510557940988" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510559206686" />
       </method>
     </configuration>
     <list size="1">
@@ -3425,21 +3425,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/WeatherServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="60" column="37" lean-forward="false" selection-start-line="59" selection-start-column="9" selection-end-line="60" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/ViewPagerHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="123">
           <caret line="215" column="80" lean-forward="false" selection-start-line="215" selection-start-column="80" selection-end-line="215" selection-end-column="80" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/sjsu/cmpe277/weatherapp/weatherApi/WeatherServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1433">
+          <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
