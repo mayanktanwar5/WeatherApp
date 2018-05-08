@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="180dp"
+    android:layout_height="match_parent"
+    android:id="@+id/fiveDayForecastCardView"
+    android:padding="@dimen/text_small"
+    app:cardBackgroundColor="#f9f7f7"
+    app:contentPadding="5dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/dayForecast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="@color/colorViolet"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="@dimen/text_small"
+            android:layout_weight="0.5"
+            android:text=" TUE"/>
+
+        <TextView
+            android:id="@+id/dayMonthForecast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="@color/colorViolet"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="15sp"
+            android:layout_weight="0.5"
+            android:text=" 11/10"/>
+
+        <TextView
+            android:id="@+id/weather_icon_forecast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:textAlignment="center"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-thin"
+            android:textSize="@dimen/text_medium"
+            android:text="icon"/>
+        <TextView
+            android:id="@+id/weather_temp_forecast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorViolet"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_small"
+            android:fontFamily="sans-serif-medium"
+            android:layout_weight="1"
+            android:text="2°"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/weather_max_temp_forecast_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorMaxTemp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:textAlignment="textEnd"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_weight="1"
+                android:text="@string/arrow_up_long"/>
+            <TextView
+                android:id="@+id/weather_max_temp_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorViolet"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_weight="1"
+                android:text="2°"/>
+
+            <TextView
+                android:id="@+id/weather_min_temp_forecast_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorLightBlue"
+                android:textStyle="bold"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_weight="1"
+                android:text="@string/arrow_down_long"/>
+            <TextView
+                android:id="@+id/weather_min_temp_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorViolet"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:textAlignment="textStart"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_weight="1"
+                android:text="2°"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

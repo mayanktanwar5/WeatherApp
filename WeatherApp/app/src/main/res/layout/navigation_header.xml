@@ -1,19 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorBackgroung"
+    android:background="@color/colorGrey"
     >
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        android:background="@android:color/transparent"
-        android:padding="5dp"
-        android:src="@drawable/ic_action_edit">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    </ImageButton>
-</RelativeLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:textSize="@dimen/text_medium"
+            android:id="@+id/editPencil"
+            android:textColor="@color/colorViolet"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:textAlignment="textEnd"
+            android:padding="5dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/edit_pencil">
+        </TextView>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:textSize="@dimen/text_medium"
+            android:id="@+id/cancelPencil"
+            android:textColor="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-thin"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textAlignment="textEnd"
+            android:padding="5dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/close_pencil">
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

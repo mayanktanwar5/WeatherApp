@@ -6,7 +6,7 @@
     <string name="action_edit_city">Edit City</string>
     <string name="toggle_open">Open</string>
     <string name="toggle_close">Close</string>
-    <string name="current_city">Your current city</string>
+    <string name="current_city">You are here</string>
 
     <string name="location_settings">Location Settings</string>
     <string name="location_settings_message">Location is not enabled. Do you wish to go to the settings menu?</string>
@@ -14,4 +14,28 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="getting_location">Getting your location ...</string>
+    <string name="startup_selection">Select an option below</string>
+    <string name="add_city">Add City</string>
+    <string name="detect_location">Detect Location</string>
+
+
+    <string name="weather_sunny" translatable="false">&#xf00d;</string>
+    <string name="weather_clear_night" translatable="false">&#xf02e;</string>
+    <string name="weather_foggy" translatable="false">&#xf014;</string>
+    <string name="weather_cloudy" translatable="false">&#xf013;</string>
+    <string name="weather_rainy" translatable="false">&#xf019;</string>
+    <string name="weather_snowy" translatable="false">&#xf01b;</string>
+    <string name="weather_thunder" translatable="false">&#xf01e;</string>
+    <string name="weather_drizzle" translatable="false">&#xf01c;</string>
+    <string name="weather_max_temp" translatable="false">&#xf055;</string>
+    <string name="weather_min_temp" translatable="false">&#xf053;</string>
+    <string name="weather_humidity" translatable="false">&#xf07a;</string>
+    <string name="weather_pressure" translatable="false">&#xf079;</string>
+    <string name="weather_celsius" translatable="false">&#xf03c;</string>
+    <string name="weather_fharenheit" translatable="false">&#xf045;</string>
+    <string name="edit_pencil" translatable="false" >&#xf040;</string>
+    <string name="arrow_up_long" translatable="false" >&#xf176;</string>
+    <string name="arrow_down_long" translatable="false" >&#xf175;</string>
+    <string name="trash_can" translatable="false" >&#xf014;</string>
+    <string name="close_pencil" translatable="false" >&#xf00d;</string>
 </resources>

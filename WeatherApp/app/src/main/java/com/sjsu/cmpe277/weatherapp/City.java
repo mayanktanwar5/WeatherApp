@@ -3,6 +3,7 @@ package com.sjsu.cmpe277.weatherapp;
 import android.graphics.Bitmap;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Mak on 10/28/17.
@@ -14,15 +15,27 @@ public class City implements Serializable{
     private String cityCountry;
     private String googleCityId;
     private int owId;
-    private double cityLongitude;
-    private double cityLatitude;
-    private double cityMinTemp;
-    private double cityMaxTemp;
+    private Double cityLongitude;
+    private Double cityLatitude;
+    private Double cityTemp;
+    private Date timestamp;
+
+    private Double cityMinTemp;
+    private Double cityMaxTemp;
     private String cityTempMetric;
-    private double cityHumididty;
-    private double cityPressure;
-    private double cityWindSpeed;
-    private double cityDegrees;
+    private Double cityHumididty;
+    private Double cityPressure;
+    private Double cityWindSpeed;
+    private Double cityDegrees;
+    private Double weatherId;
+    private String weatherMain;
+    private String weatherDescription;
+    private String weatherIcon;
+    private String tempDay;
+    private String tempHour;
+    private String tempMonthDay;
+    private String timeZone;
+
     private byte[] cityImage;
 
     public City(String googleCityId) {
@@ -37,11 +50,11 @@ public class City implements Serializable{
         this.cityCountry = cityCountry;
     }
 
-    public void setCityLongitude(double cityLongitude) {
+    public void setCityLongitude(Double cityLongitude) {
         this.cityLongitude = cityLongitude;
     }
 
-    public void setCityLatitude(double cityLatitude) {
+    public void setCityLatitude(Double cityLatitude) {
         this.cityLatitude = cityLatitude;
     }
 
@@ -53,11 +66,11 @@ public class City implements Serializable{
         this.owId = owId;
     }
 
-    public void setCityMinTemp(double cityMinTemp) {
+    public void setCityMinTemp(Double cityMinTemp) {
         this.cityMinTemp = cityMinTemp;
     }
 
-    public void setCityMaxTemp(double cityMaxTemp) {
+    public void setCityMaxTemp(Double cityMaxTemp) {
         this.cityMaxTemp = cityMaxTemp;
     }
 
@@ -65,23 +78,31 @@ public class City implements Serializable{
         this.cityTempMetric = cityTempMetric;
     }
 
-    public void setCityHumididty(double cityHumididty) {
+    public void setCityHumididty(Double cityHumididty) {
         this.cityHumididty = cityHumididty;
     }
 
-    public void setCityPressure(double cityPressure) {
+    public void setCityPressure(Double cityPressure) {
         this.cityPressure = cityPressure;
     }
 
-    public void setCityWindSpeed(double cityWindSpeed) {
+    public void setCityWindSpeed(Double cityWindSpeed) {
         this.cityWindSpeed = cityWindSpeed;
     }
 
-    public void setCityDegrees(double cityDegrees) {
+    public void setCityDegrees(Double cityDegrees) {
         this.cityDegrees = cityDegrees;
     }
 
-    public City(String cityName, String cityCountry, String googleCityId, double cityLongitude, double cityLatitude, byte[] cityImage) {
+    public Double getCityTemp() {
+        return cityTemp;
+    }
+
+    public void setCityTemp(Double cityTemp) {
+        this.cityTemp = cityTemp;
+    }
+
+    public City(String cityName, String cityCountry, String googleCityId, Double cityLongitude, Double cityLatitude, byte[] cityImage) {
         this.cityName = cityName;
         this.cityCountry = cityCountry;
         this.googleCityId = googleCityId;
@@ -90,6 +111,14 @@ public class City implements Serializable{
         this.cityImage = cityImage;
 
     }
+
+    public City(String cityName, int owId) {
+        this.cityName = cityName;
+        this.cityCountry = cityCountry;
+        this.owId = owId;
+    }
+
+
 
     public String getCityName() {
         return cityName;
@@ -107,19 +136,19 @@ public class City implements Serializable{
         return owId;
     }
 
-    public double getCityLongitude() {
+    public Double getCityLongitude() {
         return cityLongitude;
     }
 
-    public double getCityLatitude() {
+    public Double getCityLatitude() {
         return cityLatitude;
     }
 
-    public double getCityMinTemp() {
+    public Double getCityMinTemp() {
         return cityMinTemp;
     }
 
-    public double getCityMaxTemp() {
+    public Double getCityMaxTemp() {
         return cityMaxTemp;
     }
 
@@ -127,23 +156,100 @@ public class City implements Serializable{
         return cityTempMetric;
     }
 
-    public double getCityHumididty() {
+    public Double getCityHumididty() {
         return cityHumididty;
     }
 
-    public double getCityPressure() {
+    public Double getCityPressure() {
         return cityPressure;
     }
 
-    public double getCityWindSpeed() {
+    public Double getCityWindSpeed() {
         return cityWindSpeed;
     }
 
-    public double getCityDegrees() {
+    public Double getCityDegrees() {
         return cityDegrees;
     }
 
     public byte[] getCityImage() {
         return cityImage;
+    }
+
+
+    public void setGoogleCityId(String googleCityId) {
+        this.googleCityId = googleCityId;
+    }
+
+    public Double getWeatherId() {
+        return weatherId;
+    }
+
+    public void setWeatherId(Double weatherId) {
+        this.weatherId = weatherId;
+    }
+
+    public String getWeatherMain() {
+        return weatherMain;
+    }
+
+    public void setWeatherMain(String weatherMain) {
+        this.weatherMain = weatherMain;
+    }
+
+    public String getWeatherDescription() {
+        return weatherDescription;
+    }
+
+    public void setWeatherDescription(String weatherDescription) {
+        this.weatherDescription = weatherDescription;
+    }
+
+    public String getWeatherIcon() {
+        return weatherIcon;
+    }
+
+    public void setWeatherIcon(String weatherIcon) {
+        this.weatherIcon = weatherIcon;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTempDay() {
+        return tempDay;
+    }
+
+    public void setTempDay(String tempDay) {
+        this.tempDay = tempDay;
+    }
+
+    public String getTempHour() {
+        return tempHour;
+    }
+
+    public void setTempHour(String tempHour) {
+        this.tempHour = tempHour;
+    }
+
+    public String getTempMonthDay() {
+        return tempMonthDay;
+    }
+
+    public void setTempMonthDay(String tempMonthDay) {
+        this.tempMonthDay = tempMonthDay;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 }

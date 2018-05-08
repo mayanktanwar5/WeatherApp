@@ -1,5 +1,9 @@
 package com.sjsu.cmpe277.weatherapp.weatherApi;
 
+import com.sjsu.cmpe277.weatherapp.City;
+
+import org.json.JSONException;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,8 +12,8 @@ import java.util.List;
  */
 
 public interface WeatherService {
-    public DailyWeather getCurrentWeather(String city, String country);
-    public DailyWeather[] getOneDayForecast(String city, String country, String timeZone);
-    public DailyWeather[] getFiveDayForecast(String city, String country, String timeZone);
-    public String getCity(double latitude, double longitude);
+    public City getCurrentWeather(String city, String country, String timeZone) throws JSONException;
+    public List<City> getForecast(String city, String country, String timeZone, String forecatType );
+    //public City[] getFiveDayForecast(String city, String country, String timeZone);
+    //public String getCity(double latitude, double longitude);
 }
